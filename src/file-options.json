@@ -1,0 +1,57 @@
+{
+  "type": "object",
+  "properties": {
+    "f": {
+      "description":
+        "Alias of `format`. Specify `jpg`, `webp`, or `png` to convert formats. By default, no conversion will take place.",
+      "type": "string"
+    },
+    "format": {
+      "description":
+        "Specify `jpg`, `webp`, or `png` to convert formats. By default, no conversion will take place.",
+      "type": "string"
+    },
+    "h": {
+      "description":
+        "Alias of `height`. Specify a height to downsize image to the specified height, or leave blank for full-size. Won’t upscale image.",
+      "type": ["number", "string"]
+    },
+    "height": {
+      "description":
+        "Specify a width to downsize image to the specified width, or leave blank for full-size. Won’t upscale image.",
+      "type": ["number", "string"]
+    },
+    "q": {
+      "description":
+        "Alias of `quality`. Specify a number, `1`–`100`, to reduce the image’s quality and filesize. `100` will skip optimization entirely.",
+      "type": ["number", "string"]
+    },
+    "quality": {
+      "description":
+        "Specify a number, `1`–`100`, to reduce the image’s quality and filesize. `100` will skip optimization entirely.",
+      "type": ["number", "string"]
+    },
+    "skip": {
+      "type": ["string", "boolean"]
+    },
+    "svg": {
+      "description": "Alias of `svgo`. Override SVGO default settings.",
+      "type": "object"
+    },
+    "svgo": {
+      "description": "Override SVGO default settings.",
+      "type": "object"
+    },
+    "w": {
+      "description":
+        "Alias of `width`. Specify a width to downsize image to the specified width, or leave blank for full-size. Won’t upscale image.",
+      "type": ["number", "string"]
+    },
+    "width": {
+      "description":
+        "Specify a width to downsize image to the specified width, or leave blank for full-size. Won’t upscale image.",
+      "type": ["number", "string"]
+    }
+  },
+  "additionalProperties": false
+}
