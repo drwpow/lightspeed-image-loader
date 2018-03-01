@@ -62,9 +62,32 @@ const Header = styled.header`
 `;
 ```
 
-## Global Options
+## Settings
 
-Global options can be declared on the webpack config:
+The unique feature about this loader is the ability to set options per-image.
+
+```js
+import myImage from './largejpg?q=50&w=1200&format=webp';
+```
+
+| Name      | Default       | Description                                                                                                                                            |
+| :-------- | :------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `width`   | (full width)  | Specify a width, in pixels, to downsize the image to. Or leave blank for full-size. Won’t upscale image.                                               |
+| `w`       |               | Alias of `width`.                                                                                                                                      |
+| `height`  | (full height) | Specify a height, in pixels, to downsize the image to. Or leave blank for full-size. Won’t upscale image.                                              |
+| `h`       |               | Alias of `height`.                                                                                                                                     |
+| `quality` | `75`          | Specify a number, `1`–`100`, to reduce the image’s quality and filesize. **`100` skips optimization entirely** (technically, it’s not `100%` quality). |
+| `q`       |               | Alias of `quality`.                                                                                                                                    |
+| `format`  | (same)        | Specify `jpg`, `webp`, or `png` to convert formats. By default, no conversion will take place.                                                         |
+| `f`       |               | Alias of `format`.                                                                                                                                     |
+| `skip`    | `false`       | Set to `?skip` or `?skip=true` to bypass resizing & optimization entirely. Useful for problem images.                                                  |
+| `svgo`    | (object)      | Override [SVGO][svgo] default settings.                                                                                                                |
+| `svg`     |               | Alias of `svgo` (no other SVG options to set).                                                                                                         |
+
+## Global Fallbacks
+
+Global options can be declared on the webpack config. These only take effect
+when omitted from individual `import` statements:
 
 ```js
 module: {
@@ -91,41 +114,18 @@ module: {
 },
 ```
 
-| Name         | Default       | Description                                                                                                  |
-| :----------- | :------------ | :----------------------------------------------------------------------------------------------------------- |
-| `quality`    | `75`          | Set the default quality level for all image types. Specifying extension-specific options will override this. |
-| `q`          |               | Alias of `quality`.                                                                                          |
-| `outputPath` | `output.path` | Override webpack’s default output path for these images.                                                     |
-| `emitFile`   | `true`        | Set to `false` to skip processing file (for server-side rendering, e.g.).                                    |
-| `gif`        | (object)      | Specify [GIFsicle][gifsicle] options.                                                                        |
-| `jpg`        | (object)      | Specify [JpegOptim][jpegoptim] options.                                                                      |
-| `jpeg`       |               | Alias of `jpg`.                                                                                              |
-| `png`        | (object)      | Specify [OptiPNG][optipng] and [PNGquant][pngquant] options together.                                        |
-| `svgo`       | (object)      | Override [SVGO][svgo] default settings.                                                                      |
-| `svg`        |               | Alias of `svgo` (no other SVG options to set).                                                               |
-
-## Image-specific Options
-
-One unique feature about this loader is the ability to set image-specific
-options. Options set per-import always take priority over global options.
-
-```js
-import myImage from './largejpg?q=50&w=1200&format=webp';
-```
-
-| Name      | Default       | Description                                                                                                     |
-| :-------- | :------------ | :-------------------------------------------------------------------------------------------------------------- |
-| `width`   | (full width)  | Specify a width, in pixels, to downsize the image to. Or leave blank for full-size. Won’t upscale image.        |
-| `w`       |               | Alias of `width`.                                                                                               |
-| `height`  | (full height) | Specify a height, in pixels, to downsize the image to. Or leave blank for full-size. Won’t upscale image.       |
-| `h`       |               | Alias of `height`.                                                                                              |
-| `quality` | `75`          | Specify a number, `1`–`100`, to reduce the image’s quality and filesize. `100` will skip optimization entirely. |
-| `q`       |               | Alias of `quality`.                                                                                             |
-| `format`  | (same)        | Specify `jpg`, `webp`, or `png` to convert formats. By default, no conversion will take place.                  |
-| `f`       |               | Alias of `format`.                                                                                              |
-| `skip`    | `false`       | Set to `?skip` or `?skip=true` to bypass resizing & optimization entirely. Useful for problem images.           |
-| `svgo`    | (object)      | Override [SVGO][svgo] default settings.                                                                         |
-| `svg`     |               | Alias of `svgo` (no other SVG options to set).                                                                  |
+| Name         | Default       | Description                                                                                  |
+| :----------- | :------------ | :------------------------------------------------------------------------------------------- |
+| `quality`    | `75`          | Set the fallback quality level for all image types. **`100` skips optimization altogether.** |
+| `q`          |               | Alias of `quality`.                                                                          |
+| `outputPath` | `output.path` | Override webpack’s default output path for these images.                                     |
+| `emitFile`   | `true`        | Set to `false` to skip processing file (for server-side rendering, e.g.).                    |
+| `gif`        | (object)      | Specify [GIFsicle][gifsicle] options.                                                        |
+| `jpg`        | (object)      | Specify [JpegOptim][jpegoptim] options.                                                      |
+| `jpeg`       |               | Alias of `jpg`.                                                                              |
+| `png`        | (object)      | Specify [OptiPNG][optipng] and [PNGquant][pngquant] options together.                        |
+| `svgo`       | (object)      | Override [SVGO][svgo] default settings.                                                      |
+| `svg`        |               | Alias of `svgo` (no other SVG options to set).                                               |
 
 ## Image Tools
 
@@ -170,11 +170,11 @@ one `import` statement per output file, and this loader doesn’t write any
 `<picture>` or `srcset` macros for you. That decision was made for the
 following reasons:
 
-1. **You can specify higher-pixel-density files.** Is `1200w` for 1×, 2×, or 3× pixel density? With this loader, it doesn’t matter.
-2. **It’s futureproof.** Because this doesn’t shim `srcset`, it lets you use images in any way possible in your frontend code.
-3. **It simplifies development.** Each `import` statement returns a URL, and nothing more. Using `<img src={myImage} />` is much cleaner than `<img src={myImage.sizes['1200w']} />`.
-4. **It’s bulletproof.** Using one `import` per file generates errors at build-time on your files, rather than at run-time. Know as soon as your code fails.
-5. **It respects `import`.** `import` is meant for one file, and one file only. “Hacking” this limits the effectiveness of webpack and ESM in general.
+1.  **You can specify higher-pixel-density files.** Is `1200w` for 1×, 2×, or 3× pixel density? With this loader, it doesn’t matter.
+2.  **It’s futureproof.** Because this doesn’t shim `srcset`, it lets you use images in any way possible in your frontend code.
+3.  **It simplifies development.** Each `import` statement returns a URL, and nothing more. Using `<img src={myImage} />` is much cleaner than `<img src={myImage.sizes['1200w']} />`.
+4.  **It’s bulletproof.** Using one `import` per file generates errors at build-time on your files, rather than at run-time. Know as soon as your code fails.
+5.  **It respects `import`.** `import` is meant for one file, and one file only. “Hacking” this limits the effectiveness of webpack and ESM in general.
 
 [gifsicle]: https://github.com/imagemin/imagemin-gifsicle
 [jpegoptim]: https://github.com/imagemin/imagemin-jpegoptim
