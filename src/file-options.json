@@ -3,7 +3,7 @@
   "properties": {
     "f": {
       "description":
-        "Alias of `format`. Specify `jpg`, `webp`, or `png` to convert formats. By default, no conversion will take place.",
+        "Shortcut for `format`. Specify `jpg`, `webp`, or `png` to convert formats. By default, no conversion will take place.",
       "type": "string"
     },
     "format": {
@@ -13,25 +13,32 @@
     },
     "h": {
       "description":
-        "Alias of `height`. Specify a height to downsize image to the specified height, or leave blank for full-size. Won’t upscale image.",
+        "Shortcut for `height`. Specify a number to downsize the image width to (in pixels). Width will scale automatically. Won’t upscale image. If `height` and `width` are specified, width takes priority.",
       "type": ["number", "string"]
     },
     "height": {
       "description":
-        "Specify a width to downsize image to the specified width, or leave blank for full-size. Won’t upscale image.",
+        "Specify a number to downsize the image width to (in pixels). Width will scale automatically. Won’t upscale image. If `height` and `width` are specified, width takes priority.",
       "type": ["number", "string"]
+    },
+    "inline": {
+      "description":
+        "Set to `?inline` or `?inline=true` to return SVG markup for SVG files, or base64 encoding for other files.",
+      "type": ["string", "boolean"]
     },
     "q": {
       "description":
-        "Alias of `quality`. Specify a number, `1`–`100`, to reduce the image’s quality and filesize. `100` will skip optimization entirely.",
+        "Shortcut for `quality`. Specify a number, `1`–`100`, to reduce the image’s quality and filesize.",
       "type": ["number", "string"]
     },
     "quality": {
       "description":
-        "Specify a number, `1`–`100`, to reduce the image’s quality and filesize. `100` will skip optimization entirely.",
+        "Specify a number, `1`–`100`, to reduce the image’s quality and filesize.",
       "type": ["number", "string"]
     },
     "skip": {
+      "description":
+        "Set to `?skip` or `?skip=true` to bypass resizing & optimization entirely. Useful for problem images.",
       "type": ["string", "boolean"]
     },
     "svg": {
@@ -44,12 +51,12 @@
     },
     "w": {
       "description":
-        "Alias of `width`. Specify a width to downsize image to the specified width, or leave blank for full-size. Won’t upscale image.",
+        "Shortcut for `width`. Specify a number to downsize the image width to (in pixels). Height will scale automatically. Won’t upscale image. Ignored for SVG.",
       "type": ["number", "string"]
     },
     "width": {
       "description":
-        "Specify a width to downsize image to the specified width, or leave blank for full-size. Won’t upscale image.",
+        "Specify a number to downsize the image width to (in pixels). Height will scale automatically. Won’t upscale image. Ignored for SVG.",
       "type": ["number", "string"]
     }
   },

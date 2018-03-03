@@ -3,30 +3,30 @@
   "properties": {
     "emitFile": ["boolean"],
     "gif": {
-      "description": "Specify GIF-specific options.",
+      "description": "Specify GIFSicle options.",
       "type": "object"
     },
     "jpg": {
-      "description": "Specify JPG-specific options.",
+      "description": "Specify JpegOptim options. ",
       "type": "object"
     },
     "jpeg": {
-      "description": "Alias of `jpg`. Specify JPG-specific options.",
+      "description": "Alias of `jpg`. Specify JpegOptim options.",
       "type": "object"
     },
     "outputPath": ["string"],
     "png": {
-      "description": "Specify PNG-specific options.",
+      "description": "Specify OptiPNG and PNGquant options together. ",
       "type": "object"
     },
     "q": {
       "description":
-        "Alias of `quality`. Specify a number, `1`–`100`, to reduce the image’s quality and filesize. `100` will skip optimization entirely.",
+        "Alias of `quality`. Specify a number, `1`–`100`, to set the fallback quality when none is specified.",
       "type": ["number", "string"]
     },
     "quality": {
       "description":
-        "Specify a number, `1`–`100`, to reduce the image’s quality and filesize. `100` will skip optimization entirely.",
+        "Specify a number, `1`–`100`, to set the fallback quality when none is specified.",
       "type": ["number", "string"]
     },
     "svg": {

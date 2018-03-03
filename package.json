@@ -1,8 +1,11 @@
 {
   "name": "optimize-image-loader",
   "version": "0.0.1-alpha",
-  "description": "webpack Loader for optimized, responsive images",
-  "main": "dist/cjs.js",
+  "description": "webpack loader for optimized, responsive images. Works with React, Vue, and all frontend setups.",
+  "main": "dist",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "babel src -d dist --ignore 'src/**/*.test.js' --copy-files",
     "build:watch": "babel src -d dist --ignore 'src/**/*.test.js' --copy-files --watch",
@@ -12,6 +15,8 @@
     "type": "git",
     "url": "git+https://github.com/dangodev/optimize-image-loader.git"
   },
+  "author": "dangodev",
+  "license": "ISC",
   "keywords": [
     "webpack",
     "loader",
@@ -19,28 +24,34 @@
     "optimization",
     "imageoptim",
     "imagemin",
-    "react",
-    "vue",
     "responsive",
-    "responsive",
-    "images"
+    "picture",
+    "srcset",
+    "webp",
+    "performance"
   ],
-  "author": "dangodev",
-  "license": "ISC",
   "dependencies": {
+    "file-loader": "^1.1.11",
+    "imagemin": "^5.3.1",
+    "imagemin-gifsicle": "^5.2",
+    "imagemin-jpegoptim": "^5.2",
+    "imagemin-optipng": "^5.2",
+    "imagemin-pngquant": "^5.0.1",
+    "imagemin-svgo": "^6.0",
+    "imagemin-webp": "^4.1",
+    "raw-loader": "^0.5.1",
+    "sharp": "^0.19.1",
+    "url-loader": "^1.0.1"
+  },
+  "devDependencies": {
     "@babel/cli": "^7.0.0-beta.40",
     "@babel/core": "^7.0.0-beta.40",
     "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.40",
     "@babel/preset-env": "^7.0.0-beta.40",
-    "imagemin": "^5.3.1",
-    "imagemin-gifsicle": "^5.2.0",
-    "imagemin-jpegoptim": "^5.2.0",
-    "imagemin-optipng": "^5.2.1",
-    "imagemin-pngquant": "^5.0.1",
-    "imagemin-svgo": "^6.0.0",
-    "imagemin-webp": "^4.1.0",
     "loader-utils": "^1.1.0",
-    "schema-utils": "^0.4.5",
-    "sharp": "^0.19.0"
+    "schema-utils": "^0.4.5"
+  },
+  "peerDependencies": {
+    "webpack": "^3.0 || ^4.0"
   }
 }
