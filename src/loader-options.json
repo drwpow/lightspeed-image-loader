@@ -1,7 +1,11 @@
 {
   "type": "object",
   "properties": {
-    "emitFile": ["boolean"],
+    "emitFile": {
+      "description":
+        "Set to `false` to skip processing file (for server-side rendering, e.g.).",
+      "type": "boolean"
+    },
     "gif": {
       "description": "Specify GIFSicle options.",
       "type": "object"
@@ -14,7 +18,10 @@
       "description": "Alias of `jpg`. Specify JpegOptim options.",
       "type": "object"
     },
-    "outputPath": ["string"],
+    "outputPath": {
+      "description": "Override webpack’s default output path for these images.",
+      "type": "string"
+    },
     "png": {
       "description": "Specify OptiPNG and PNGquant options together. ",
       "type": "object"

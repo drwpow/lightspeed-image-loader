@@ -1,20 +1,21 @@
-import fs from 'fs';
-import fileLoader from 'file-loader';
-import imagemin from 'imagemin';
-import imageminGifsicle from 'imagemin-gifsicle';
-import imageminJpegOptim from 'imagemin-jpegoptim';
-import imageminOptiPng from 'imagemin-optipng';
-import imageminPngQuant from 'imagemin-pngquant';
-import imageminSVGO from 'imagemin-svgo';
-import imageminWebP from 'imagemin-webp';
-import { getOptions, parseQuery } from 'loader-utils';
-import rawLoader from 'raw-loader';
-import sharp from 'sharp';
-import urlLoader from 'url-loader';
-import validateOptions from 'schema-utils';
+const chalk = require('chalk');
+const fs = require('fs');
+const fileLoader = require('file-loader');
+const imagemin = require('imagemin');
+const imageminGifsicle = require('imagemin-gifsicle');
+const imageminMozjpeg = require('imagemin-mozjpeg');
+const imageminOptiPng = require('imagemin-optipng');
+const imageminPngQuant = require('imagemin-pngquant');
+const imageminSVGO = require('imagemin-svgo');
+const imageminWebP = require('imagemin-webp');
+const { getOptions, parseQuery, urlToRequest } = require('loader-utils');
+const rawLoader = require('raw-loader');
+const sharp = require('sharp');
+const urlLoader = require('url-loader');
+const validateOptions = require('schema-utils');
 
-import loaderSchema from './loader-options.json';
-import fileSchema from './file-options.json';
+const loaderSchema = require('./loader-options.json');
+const fileSchema = require('./file-options.json');
 
 /* Settings */
 
@@ -25,137 +26,187 @@ const defaultQuality = 60;
 const normalizeExtension = filename =>
   typeof filename === 'string' ? filename.replace(/jpeg/i, 'jpg') : filename;
 
+// Convert bits to seconds, assuming 1.5 Mb/s download
+const bTo3G = kb => `${Math.ceil(10 * (kb / 1000000) / 1.5) / 10}s`;
+
 const gifsicleQuality = q => Math.ceil((100 - q) / (100 / 3));
 
-const mergeOptions = (source, fileOptions, loaderOptions) => {
+const mergeOptions = (source, loaderOptions, fileOptions) => {
   const extension = normalizeExtension(
-    this.resourcePath.match(/\.[0-9a-z]+$/i)[0]
-  );
-  const filename = normalizeExtension(this.resourcePath.match(/[^\/]+$/)[0]);
-  const newFormat = normalizeExtension(fileOptions['format' || 'f']) || null;
-  const newExtension = newFormat ? newFormat : extension;
+    source.match(/\.[0-9a-z]+$/i)[0]
+  ).replace('.', '');
+  const filename = normalizeExtension(source.match(/[^\/]+$/)[0]);
+  const newFormat =
+    normalizeExtension(fileOptions.format || fileOptions.f) || null;
+  const newExtension = newFormat || extension;
   let newQuality = defaultQuality;
-  if (fileOptions['quality' || 'q'])
-    newQuality = parseInt(fileOptions['quality' || 'q'], 10);
-  else if (newExtension && loaderOptions[newExtension]['quality' || 'q'])
-    newQuality = parseInt(loaderOptions[newExtension]['quality' || 'q'], 10);
-  else if (loaderOptions['quality' || 'q'])
-    newQuality = loaderOptions['quality' || 'q'];
-
-  const outputPath =
-    typeof loaderOptions.outputPath === 'function'
-      ? loaderOptions.outputPath(filename)
-      : loaderOptions.outputPath + filename;
+  if (fileOptions.quality || fileOptions.q)
+    newQuality = parseInt(fileOptions.quality || fileOptions.q, 10);
+  else if (
+    newExtension &&
+    loaderOptions[newExtension] &&
+    (loaderOptions[newExtension].quality || loaderOptions[newExtension].q)
+  )
+    newQuality = parseInt(
+      loaderOptions[newExtension].quality || loaderOptions[newExtension].q,
+      10
+    );
+  else if (loaderOptions.quality || loaderOptions.q)
+    newQuality = loaderOptions.quality || loaderOptions.q;
 
   return {
     format: newFormat,
-    emitFile: options.emitFile === false ? false : true,
     extension: newExtension,
     inline: fileOptions.inline && fileOptions.inline.toString() !== 'false',
     filename,
-    outputPath,
     optimize: {
       gif: {
         ...loaderOptions.gif,
+        ...fileOptions.gif,
         quality: gifsicleQuality(newQuality),
       },
-      height: !fileOptions['width' || 'w']
-        ? fileOptions['height' || 'h']
-        : null, // Only set height if no width
+      height: parseInt(fileOptions.height || fileOptions.h, 10) || null,
       jpg: {
-        ...loaderOptions['jpg' || 'jpeg'],
+        ...(loaderOptions.jpg || loaderOptions.jpeg),
+        ...(fileOptions.jpg || fileOptions.jpeg),
         max: newQuality,
       },
       png: { ...loaderOptions.png, quality: newQuality },
       quality: newQuality,
       skip: fileOptions.skip && fileOptions.skip.toString() !== 'false',
-      svgo: { ...fileOptions['svgo' || 'svg'] },
-      webp: { quality: newQuality },
-      width: fileOptions['width' || 'w'],
+      svgo: { ...(fileOptions.svgo || fileOptions.svg) },
+      webp: {
+        ...loaderOptions.webp,
+        ...fileOptions.webp,
+        quality: newQuality,
+      },
+      width: parseInt(fileOptions.width || fileOptions.w) || null,
     },
-    pathname: resourcePath,
+    sharp: {
+      jpg: { progressive: true, quality: 100 },
+      rezize: {
+        kernel: fileOptions.interpolation || 'cubic',
+      },
+      webp: { ...loaderOptions.webp, ...fileOptions.webp, quality: 100 },
+    },
+    pathname: source,
   };
 };
 
 const reportSavings = (filename, newSize, oldSize) => {
-  const sizeDiff = newSize - oldSize;
-  return `${filename}: ${sizeDiff / 1028} KB (${-100 * sizeDiff / oldSize}%)}`;
+  const sizeDiff = oldSize - newSize;
+  return `${chalk.bold(filename)}: saved ${chalk.green(
+    `${chalk.bold(`${Math.ceil(100 * sizeDiff / 1028) / 100} KB`)} (${Math.ceil(
+      100 * (100 * sizeDiff / oldSize)
+    ) / 100}% / ${bTo3G(sizeDiff)} on 3G)`
+  )}`;
 };
 
 /* Methods */
 
-const complete = (source, options, oldSize, callback) => {
-  const message = options.skip
-    ? `${options.filename}: skipping…`
-    : reportSavings(options.filename, source.byteLength, oldSize);
-
-  if (options.inline && options.output === 'svg')
-    return callback(message, rawLoader.call(this, source));
-  else if (options.inline)
-    return callback(message, urlLoader.call(this, source));
-
-  return callback(message, fileLoader.call(this, source));
-};
-
 const optimize = (source, { extension, optimize }) => {
-  const plugins = [
-    imageminGifsicle(optimize.gif),
-    imageminJpegOptim(optimize.jpg),
-    imageminOptiPng(optimize.png),
-    imageminPngQuant(optimize.png),
-    imageminSVGO(optimize.svgo),
-  ];
-  if (extension === 'webp') plugins.push(imageminWebP(optimize.webp));
-  return imagemin.buffer(source, { plugins });
+  const plugins = [];
+  switch (extension) {
+    case 'jpg': {
+      plugins.push(imageminMozjpeg(optimize.jpg));
+      break;
+    }
+    case 'png': {
+      plugins.push(imageminOptiPng(optimize.png));
+      plugins.push(imageminPngQuant(optimize.png));
+      break;
+    }
+    case 'gif': {
+      plugins.push(imageminGifsicle(optimize.gif));
+      break;
+    }
+    case 'svg': {
+      plugins.push(imageminSVGO(optimize.svgo));
+      break;
+    }
+    case 'webp': {
+      plugins.push(imageminWebP(optimize.webp));
+      break;
+    }
+  }
+  if (typeof source.toBuffer === 'function')
+    return source
+      .toBuffer()
+      .then(buffered => imagemin.buffer(buffered, { plugins }));
+
+  return imagemin.buffer(fs.readFileSync(source), { plugins });
 };
 
-const format = (source, { extension, optimize: { format } }) => {
-  if (extension === 'svg' || extension === 'gif') {
-    return Promise(source);
-  }
-  const buffer = sharp(source).toBuffer();
-  return format ? buffer.format(format) : buffer;
+const format = ({ extension, format, pathname, ...options }) => {
+  if (extension === 'svg' || extension === 'gif' || !format) return pathname;
+  return sharp(pathname).toFormat(format, options.sharp[format]);
 };
 
-const resize = (source, { extension, optimize: { height, width } }) => {
-  if (extension === 'svg' || extension === 'gif') {
-    return Promise(source);
-  } else if (width || height) {
-    return source.resize(width, height).withoutEnlargement(true);
-  }
-  return Promise(source);
+const resize = (
+  source,
+  { extension, optimize: { height, width }, ...options }
+) => {
+  // Return early if un-resizable
+  if (extension === 'svg' || extension === 'gif') return source;
+  // We might have skipped sharp() from previous step
+  const img = typeof source.resize !== 'function' ? sharp(source) : source;
+  if (!width && !height) return img;
+  const resized = img
+    .resize(width, height, options.sharp.resize)
+    .withoutEnlargement(true);
+
+  // .max() necessary if both width & height specified
+  return width && height ? resized.max() : resized;
 };
 
 /* Loader */
 
 module.exports = function loader(source) {
-  /* Let webpack know this loader is async */
+  // Let webpack know this loader is async
   const callback = this.async();
 
-  /* Load file options & break if syntax error */
+  // Enable webpack caching
+  this.cacheable && this.cacheable();
+
+  // Load file options & break if syntax error
   const fileOptions = this.resourceQuery ? parseQuery(this.resourceQuery) : {};
   if (Object.keys(fileOptions).length)
     validateOptions(fileSchema, fileOptions, 'Optimize Image Loader');
 
-  /* Get global fallback options & break if syntax error */
+  // Get global fallback options & break if syntax error
   const loaderOptions = getOptions(this) || {};
   validateOptions(loaderSchema, loaderOptions, 'Optimize Image Loader');
 
-  /* Combine file & fallback options, giving file options priority */
-  const options = mergeOptions(this.resourcePath, fileOptions, loaderOptions);
+  // Combine file & fallback options, giving file options priority
+  const options = mergeOptions(this.resourcePath, loaderOptions, fileOptions);
 
-  /* Return early if skipping file */
-  if (options.skip || options.emitFile === false) {
-    complete(source, options, sizeBefore, callback);
-  }
+  // Save size before optimization
+  const sizeBefore = fs.statSync(this.resourcePath).size;
 
-  const sizeBefore = source.byteLength;
+  // Our final function (accessible to loader scope)
+  const complete = optimized => {
+    const message = options.skip
+      ? `${chalk.bold(options.filename)}: skipping…`
+      : reportSavings(options.filename, optimized.byteLength, sizeBefore);
+    console.log(message);
 
-  format(source, options).then(data =>
-    resize(data, options).then(data =>
-      optimize(data, options).then(data =>
-        complete(data, options, sizeBefore, callback)
-      )
-    )
-  );
+    if (options.inline && options.extension === 'svg')
+      return callback(null, rawLoader.call(this, optimized));
+    else if (options.inline)
+      return callback(null, urlLoader.call(this, optimized));
+
+    return callback(null, fileLoader.call(this, optimized));
+  };
+
+  // Path 1: complete (if skipping)
+  if (options.skip || options.emitFile === false) return complete(source);
+
+  // Path 2: format -> resize -> optimize -> complete
+  const formatted = format(options);
+  const resized = resize(formatted, options);
+  return optimize(resized, options)
+    .then(optimized => complete(optimized))
+    .catch(error => callback(error));
 };
+
+module.exports.raw = true;
