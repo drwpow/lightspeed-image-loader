@@ -1,3 +1,4 @@
+![optimize-image-loader latest version][version]
 ![Dependencies status][status]
 ![devDependencies status][status-dev]
 
@@ -270,4 +271,5 @@ This loader wouldn’t be possible without the significant achievements of:
 [status-dev]: https://david-dm.org/dangodev/optimize-image-loader/dev-status.svg
 [svgo]: https://github.com/svg/svgo
 [urlloader]: https://github.com/webpack-contrib/url-loader
+[version]: https://badge.fury.io/js/optimize-image-loader.svg
 [webp]: https://github.com/imagemin/imagemin-webp
