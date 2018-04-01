@@ -26,6 +26,11 @@
         "Set to `?inline` or `?inline=true` to return SVG markup for SVG files, or base64 encoding for other files.",
       "type": ["string", "boolean"]
     },
+    "interpolation": {
+      "description":
+        "When scaling, specify `'nearest'` for nearest-neighbor (pixel art), `'cubic'` for cubic interpolation, or `'lanczos2'` or `'lanczos3'` for [Lanczos][lanczos] with `a=2` or `a=3`. `'cubic'` is this loader’s default (because it’s what most are used to), as opposed to`'lanczos3'` which is sharp’s default (present for other loaders)",
+      "type": "string"
+    },
     "q": {
       "description":
         "Shortcut for `quality`. Specify a number, `1`–`100`, to reduce the image’s quality and filesize.",
@@ -40,14 +45,6 @@
       "description":
         "Set to `?skip` or `?skip=true` to bypass resizing & optimization entirely. Useful for problem images.",
       "type": ["string", "boolean"]
-    },
-    "svg": {
-      "description": "Alias of `svgo`. Override SVGO default settings.",
-      "type": "object"
-    },
-    "svgo": {
-      "description": "Override SVGO default settings.",
-      "type": "object"
     },
     "w": {
       "description":

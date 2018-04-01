@@ -131,6 +131,12 @@ import inlineSVG from './myimage.svg?inline';
 <div dangerouslySetInnerHtml={{ __html: inlineSVG }} />
 ```
 
+#### Resizing pixel art
+
+```js
+import pixelArt from './pixel-art?w=2048&interpolation=nearest';
+```
+
 ## Options
 
 Specifying options per-image is the preferred method of this loader. By
@@ -160,6 +166,10 @@ webpack config as your images change.
 import myImage from './large.jpg?q=50&w=1200&f=webp';
 ```
 
+_Note: this loader **will not** upscale images because it increases file size
+without improving image quality. If you need to upscale pixel art, do it in
+CSS with `image-rendering: crisp-edges`._
+
 ### Loader options
 
 The main advantage of this loader is being able to specify quality and width
@@ -167,18 +177,18 @@ inline, but there are some settings which make sense to set globally, such as
 [SVGO][svgo] settings, or a fallback quality. In these cases, pass options to
 the loader as usual:
 
-| Name         | Default       | Description                                                                    |
-| :----------- | :------------ | :----------------------------------------------------------------------------- |
-| `quality`    | `75`          | Specify a number, `1`–`100`, to set the fallback quality if none is specified. |
-| `q`          |               | Alias of `quality`.                                                            |
-| `outputPath` | `output.path` | Override webpack’s default output path for these images.                       |
-| `emitFile`   | `true`        | Set to `false` to skip processing file (for server-side rendering, e.g.).      |
-| `gif`        | (object)      | Specify [GIFsicle][gifsicle] options.                                          |
-| `jpg`        | (object)      | Specify [mozjpeg][mozjpeg] options.                                            |
-| `jpeg`       |               | Alias of `jpg`.                                                                |
-| `png`        | (object)      | Specify [OptiPNG][optipng] and [PNGquant][pngquant] options together.          |
-| `svgo`       | (object)      | Override [SVGO][svgo] default settings.                                        |
-| `svg`        |               | Alias of `svgo` (no other SVG options to set).                                 |
+| Name         | Default       | Description                                                                                      |
+| :----------- | :------------ | :----------------------------------------------------------------------------------------------- |
+| `quality`    | `75`          | Specify a number, `1`–`100`, to set the fallback quality for all formats when none is specified. |
+| `q`          |               | Shortcut for `quality`.                                                                          |
+| `outputPath` | `output.path` | Override webpack’s default output path for these images.                                         |
+| `emitFile`   | `true`        | Set to `false` to skip processing file (for server-side rendering, e.g.).                        |
+| `gif`        | (object)      | Specify [GIFsicle][gifsicle] options.                                                            |
+| `jpg`        | (object)      | Specify [mozjpeg][mozjpeg] options.                                                              |
+| `jpeg`       |               | Alias of `jpg`.                                                                                  |
+| `png`        | (object)      | Specify [OptiPNG][optipng] and [PNGquant][pngquant] options together.                            |
+| `svgo`       | (object)      | Override [SVGO][svgo] default settings.                                                          |
+| `svg`        |               | Alias of `svgo` (no other SVG options to set).                                                   |
 
 #### Example
 

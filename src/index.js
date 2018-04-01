@@ -65,9 +65,7 @@ const mergeOptions = (source, loaderOptions, fileOptions) => {
         quality: gifsicleQuality(newQuality),
       },
       height: parseInt(fileOptions.height || fileOptions.h, 10) || null,
-      jpg: {
-        ...(loaderOptions.jpg || loaderOptions.jpeg),
-      },
+      jpg: { ...(loaderOptions.jpg || loaderOptions.jpeg) },
       png: { ...loaderOptions.png, quality: newQuality },
       quality: newQuality,
       skip: fileOptions.skip && fileOptions.skip.toString() !== 'false',

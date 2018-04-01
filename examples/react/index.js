@@ -11,6 +11,7 @@ import pngToJpg from './original.png?f=jpg';
 import svg from './original.svg';
 import svgInline from './original.svg?inline';
 import skip from './original.jpg?skip';
+import pixelArt from './pixel-art.png?w=500&interpolation=linear';
 
 const inlineSVG = () => ({
   __html: svgInline,
@@ -28,6 +29,7 @@ const App = () => (
     <img src={svg} />
     <div dangerouslySetInnerHtml={inlineSVG()} />
     <img src={skip} />
+    <img src={pixelArt} />
   </div>
 );
 
