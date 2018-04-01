@@ -62,32 +62,26 @@ const mergeOptions = (source, loaderOptions, fileOptions) => {
     optimize: {
       gif: {
         ...loaderOptions.gif,
-        ...fileOptions.gif,
         quality: gifsicleQuality(newQuality),
       },
       height: parseInt(fileOptions.height || fileOptions.h, 10) || null,
       jpg: {
         ...(loaderOptions.jpg || loaderOptions.jpeg),
-        ...(fileOptions.jpg || fileOptions.jpeg),
-        max: newQuality,
       },
       png: { ...loaderOptions.png, quality: newQuality },
       quality: newQuality,
       skip: fileOptions.skip && fileOptions.skip.toString() !== 'false',
-      svgo: { ...(fileOptions.svgo || fileOptions.svg) },
+      svgo: { ...(loaderOptions.svgo || loaderOptions.svg) },
       webp: {
         ...loaderOptions.webp,
-        ...fileOptions.webp,
         quality: newQuality,
       },
       width: parseInt(fileOptions.width || fileOptions.w) || null,
     },
     sharp: {
       jpg: { progressive: true, quality: 100 },
-      rezize: {
-        kernel: fileOptions.interpolation || 'cubic',
-      },
-      webp: { ...loaderOptions.webp, ...fileOptions.webp, quality: 100 },
+      rezize: { kernel: fileOptions.interpolation || 'cubic' },
+      webp: { ...loaderOptions.webp, quality: 100 },
     },
     pathname: source,
   };
