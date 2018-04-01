@@ -132,10 +132,10 @@ import inlineSVG from './myimage.svg?inline';
 
 ## All Options
 
-This loader was created to specify options per-image. By setting options
-per-file, you can fine-tune each image to find the best balance of quality
-and compression. Plus, you don’t have to touch your webpack config as your
-images change.
+Specifying options per-image is the preferred method of this loader. By
+setting options per-file, you can fine-tune each image to find the best
+balance of quality and compression. Plus, you don’t have to touch your
+webpack config as your images change.
 
 ```js
 import myImage from './large.jpg?q=50&w=1200&f=webp';
@@ -171,8 +171,9 @@ For tips on using WebP effectively, read this [CSS Tricks article][csstricks].
 
 ## Global Fallbacks
 
-Global options can be declared on the webpack config. These only take effect
-when omitted from individual `import` statements:
+**Global fallbacks are discouraged** in favor of file-specific settings.
+However, if there are cases where you need to enforce sane defaults, you can
+provide loader options if needed.
 
 ```js
 module: {
@@ -233,7 +234,7 @@ If your machine doesn’t have `python2.7`, install Python 2.x using
 
 If you:
 
-* want to handle resizing & optimization in the same step
+* want to handle resizing & optimization in the same step (this is the only loader that does that)
 * need to optimize & resize every image differently
 * prefer writing `srcset` manually for complete control
 * have a good understanding on image formats & optimization in general

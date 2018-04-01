@@ -1,6 +1,8 @@
 const path = require('path');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
+  entry: { main: './index.js' },
   module: {
     rules: [
       {
@@ -18,6 +20,7 @@ module.exports = {
       },
     ],
   },
+  plugins: [new CopyWebpackPlugin(['./index.html'])],
   resolveLoader: {
     alias: {
       'optimize-image-loader': path.resolve(__dirname, '..', '..'),

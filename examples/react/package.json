@@ -1,7 +1,7 @@
 {
   "scripts": {
     "build": "webpack index.js --mode production --config webpack.config.js",
-    "start": "webpack-dev-server index.js --mode development --config webpack.config.js"
+    "start": "webpack-serve --config webpack.config.js"
   },
   "dependencies": {
     "react": "^16.3.0",
@@ -12,6 +12,7 @@
     "babel-loader": "^7.1.4",
     "babel-preset-react": "^6.24.1",
     "webpack": "^4.4.1",
-    "webpack-cli": "^2.0.13"
+    "webpack-cli": "^2.0.13",
+    "webpack-serve": "^0.3.1"
   }
 }

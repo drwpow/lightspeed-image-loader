@@ -191,7 +191,7 @@ module.exports = function loader(source) {
     console.log(message);
 
     if (options.inline && options.extension === 'svg')
-      return callback(null, rawLoader.call(this, optimized));
+      return callback(null, rawLoader.call(this, optimized.toString()));
     else if (options.inline)
       return callback(null, urlLoader.call(this, optimized));
 
