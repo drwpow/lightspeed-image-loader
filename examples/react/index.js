@@ -22,7 +22,7 @@ const App = () => (
     <img src={jpg} />
     {/* jpgDupe should have same filename as jpg */}
     <img src={jpgDupe} />
-    <div style={{ backgroundImage: jpgInline, height: 200, width: 500 }} />
+    <div style={{ backgroundImage: `url(${jpgInline})`, height: 200, width: 500 }} />
     <img src={jpgLarge} />
     <img src={gif} />
     <img src={png} />
