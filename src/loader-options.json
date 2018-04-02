@@ -15,21 +15,16 @@
       "type": "object"
     },
     "jpeg": {
-      "description": "Alias of `jpg`. Specify JpegOptim options.",
+      "description": "Alias of `jpg`. Specify MozJPEG options.",
       "type": "object"
     },
     "outputPath": {
       "description": "Override webpack’s default output path for these images.",
-      "type": "string"
+      "type": ["function", "string"]
     },
     "png": {
       "description": "Specify OptiPNG and PNGquant options together. ",
       "type": "object"
-    },
-    "q": {
-      "description":
-        "Alias of `quality`. Specify a number, `1`–`100`, to set the fallback quality when none is specified.",
-      "type": ["number", "string"]
     },
     "quality": {
       "description":

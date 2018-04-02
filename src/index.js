@@ -46,14 +46,10 @@ const mergeOptions = (source, loaderOptions, fileOptions) => {
   else if (
     newExtension &&
     loaderOptions[newExtension] &&
-    (loaderOptions[newExtension].quality || loaderOptions[newExtension].q)
+    loaderOptions[newExtension].quality
   )
-    newQuality = parseInt(
-      loaderOptions[newExtension].quality || loaderOptions[newExtension].q,
-      10
-    );
-  else if (loaderOptions.quality || loaderOptions.q)
-    newQuality = loaderOptions.quality || loaderOptions.q;
+    newQuality = parseInt(loaderOptions[newExtension].quality, 10);
+  else if (loaderOptions.quality) newQuality = loaderOptions.quality;
 
   let gifQuality = newQuality;
   if (gifQuality > 3) gifQuality = gifsicleQuality(newQuality);
@@ -70,8 +66,11 @@ const mergeOptions = (source, loaderOptions, fileOptions) => {
         optimizationLevel: gifQuality,
       },
       height: parseInt(fileOptions.height || fileOptions.h, 10) || null,
-      jpg: { ...(loaderOptions.jpg || loaderOptions.jpeg) },
-      png: { ...loaderOptions.png, quality: newQuality },
+      jpg: {
+        ...(loaderOptions.jpg || loaderOptions.jpeg),
+        quality: newQuality,
+      },
+      png: { ...loaderOptions.png },
       quality: newQuality,
       skip: fileOptions.skip && fileOptions.skip.toString() !== 'false',
       svgo: { ...(loaderOptions.svgo || loaderOptions.svg) },

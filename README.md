@@ -184,23 +184,23 @@ inline, but there are some settings which make sense to set globally, such as
 [SVGO][svgo] settings, or a fallback quality. In these cases, pass options to
 the loader as usual:
 
-| Name         | Default       | Description                                                                                      |
-| :----------- | :------------ | :----------------------------------------------------------------------------------------------- |
-| `quality`    | `75`          | Specify a number, `1`–`100`, to set the fallback quality for all formats when none is specified. |
-| `q`          |               | Shortcut for `quality`.                                                                          |
-| `outputPath` | `output.path` | Override webpack’s default output path for these images.                                         |
-| `emitFile`   | `true`        | Set to `false` to skip processing file (setting from [file-loader][fileloader]).                 |
-| `gif`        | (object)      | Specify [GIFsicle][gifsicle] options.                                                            |
-| `jpg`        | (object)      | Specify [mozjpeg][mozjpeg] options.                                                              |
-| `jpeg`       |               | Alias of `jpg`.                                                                                  |
-| `png`        | (object)      | Specify [OptiPNG][optipng] and [PNGquant][pngquant] options together.                            |
-| `svgo`       | (object)      | Override [SVGO][svgo] default settings.                                                          |
-| `svg`        |               | Alias of `svgo` (no other SVG options to set).                                                   |
+| Name         | Default       | Description                                                                                       |
+| :----------- | :------------ | :------------------------------------------------------------------------------------------------ |
+| `quality`    | `75`          | Specify a number, `1`–`100`, to set the fallback quality for all formats when none is specified.  |
+| `outputPath` | `output.path` | Override webpack’s default output path for these images (setting from [file-loader][fileloader]). |
+| `emitFile`   | `true`        | Set to `false` to skip processing file (setting from [file-loader][fileloader]).                  |
+| `gif`        | (object)      | Specify [GIFsicle][gifsicle] options.                                                             |
+| `jpg`        | (object)      | Specify [mozjpeg][mozjpeg] options.                                                               |
+| `jpeg`       |               | Alias of `jpg`.                                                                                   |
+| `png`        | (object)      | Specify [OptiPNG][optipng] and [PNGquant][pngquant] options together.                             |
+| `svgo`       | (object)      | Override [SVGO][svgo] default settings.                                                           |
+| `svg`        |               | Alias of `svgo` (no other SVG options to set).                                                    |
 
 _Note: because this loader passes images on to [file-loader][fileloader],
 [url-loader][urlloader], or [raw-loader][rawloader], the same is true of
 loader options! You should be able to use any options from those loaders
-within this config._
+within this config. However, **don’t use this loader for anything other than
+images!** You’ll still need those loaders for all other file types._
 
 #### Example
 
