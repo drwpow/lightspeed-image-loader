@@ -29,7 +29,8 @@ const normalizeExtension = filename =>
 // Convert bits to seconds, assuming 1.5 Mb/s download
 const bTo3G = kb => `${Math.ceil(10 * (kb / 1000000) / 1.5) / 10}s`;
 
-const gifsicleQuality = q => Math.ceil((100 - q) / (100 / 3));
+const gifsicleQuality = q =>
+  Math.min(1, Math.max(3, Math.ceil((100 - q) / (100 / 3))));
 
 const mergeOptions = (source, loaderOptions, fileOptions) => {
   const extension = normalizeExtension(
@@ -54,6 +55,10 @@ const mergeOptions = (source, loaderOptions, fileOptions) => {
   else if (loaderOptions.quality || loaderOptions.q)
     newQuality = loaderOptions.quality || loaderOptions.q;
 
+  let gifQuality = newQuality;
+  if (gifQuality > 3) gifQuality = gifsicleQuality(newQuality);
+  if (gifQuality < 1) gifQuality = 1;
+
   return {
     format: newFormat,
     extension: newExtension,
@@ -62,7 +67,7 @@ const mergeOptions = (source, loaderOptions, fileOptions) => {
     optimize: {
       gif: {
         ...loaderOptions.gif,
-        quality: gifsicleQuality(newQuality),
+        optimizationLevel: gifQuality,
       },
       height: parseInt(fileOptions.height || fileOptions.h, 10) || null,
       jpg: { ...(loaderOptions.jpg || loaderOptions.jpeg) },
