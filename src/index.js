@@ -171,9 +171,6 @@ module.exports = function loader(source) {
   // Let webpack know this loader is async
   const callback = this.async();
 
-  // Enable webpack caching
-  this.cacheable && this.cacheable();
-
   // Load file options & break if syntax error
   const fileOptions = this.resourceQuery ? parseQuery(this.resourceQuery) : {};
   if (Object.keys(fileOptions).length)
