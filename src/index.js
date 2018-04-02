@@ -91,9 +91,14 @@ const mergeOptions = (source, loaderOptions, fileOptions) => {
   };
 };
 
-const reportSavings = (filename, newSize, oldSize) => {
+const reportSavings = ({ filename, extension }, newSize, oldSize) => {
   const sizeDiff = oldSize - newSize;
-  return `${chalk.bold(filename)}: saved ${chalk.green(
+  const oldExt = filename.match(/\.[^.]+$/);
+  const format = oldExt[0] !== `.${extension}` ? ` -> ${extension}` : '';
+  const verb = sizeDiff >= 0 ? 'saved' : 'lost';
+  const color = sizeDiff >= 0 ? chalk.green : chalk.red;
+
+  return `${chalk.bold(`${filename}${format}`)}: ${verb} ${color(
     `${chalk.bold(`${Math.ceil(100 * sizeDiff / 1028) / 100} KB`)} (${Math.ceil(
       100 * (100 * sizeDiff / oldSize)
     ) / 100}% / ${bTo3G(sizeDiff)} on 3G)`
@@ -135,8 +140,13 @@ const optimize = (source, { extension, optimize }) => {
   return imagemin.buffer(fs.readFileSync(source), { plugins });
 };
 
-const format = ({ extension, format, pathname, ...options }) => {
+const format = ({ extension, format, pathname, ...options }, context) => {
   if (extension === 'svg' || extension === 'gif' || !format) return pathname;
+  // Shim for file-loader renaming
+  context.resourcePath = context.resourcePath.replace(
+    /\.[^.]+$/,
+    `.${extension}`
+  );
   return sharp(pathname).toFormat(format, options.sharp[format]);
 };
 
@@ -187,9 +197,7 @@ module.exports = function loader(source) {
       console.log(`${chalk.bold(options.filename)}: skipping…`);
       return callback(null, fileLoader.call(this, optimized));
     }
-    console.log(
-      reportSavings(options.filename, optimized.byteLength, sizeBefore)
-    );
+    console.log(reportSavings(options, optimized.byteLength, sizeBefore));
 
     if (options.inline && options.extension === 'svg')
       return callback(null, rawLoader.call(this, optimized.toString()));
@@ -204,7 +212,7 @@ module.exports = function loader(source) {
     return complete(source);
 
   // Path 2: format -> resize -> optimize -> complete
-  const formatted = format(options);
+  const formatted = format(options, this);
   const resized = resize(formatted, options);
   return optimize(resized, options)
     .then(optimized => complete(optimized))
