@@ -182,13 +182,17 @@ the loader as usual:
 | `quality`    | `75`          | Specify a number, `1`–`100`, to set the fallback quality for all formats when none is specified. |
 | `q`          |               | Shortcut for `quality`.                                                                          |
 | `outputPath` | `output.path` | Override webpack’s default output path for these images.                                         |
-| `emitFile`   | `true`        | Set to `false` to skip processing file (for server-side rendering, e.g.).                        |
+| `emitFile`   | `true`        | Set to `false` to skip processing file (setting from [file-loader][fileloader]).                 |
 | `gif`        | (object)      | Specify [GIFsicle][gifsicle] options.                                                            |
 | `jpg`        | (object)      | Specify [mozjpeg][mozjpeg] options.                                                              |
 | `jpeg`       |               | Alias of `jpg`.                                                                                  |
 | `png`        | (object)      | Specify [OptiPNG][optipng] and [PNGquant][pngquant] options together.                            |
 | `svgo`       | (object)      | Override [SVGO][svgo] default settings.                                                          |
 | `svg`        |               | Alias of `svgo` (no other SVG options to set).                                                   |
+
+_Note: because this loader passes images on to [file-loader][fileloader],
+[url-loader][urlloader], or [raw-loader][rawloader], you can actually use all
+of their options within this loader, and they’ll be passed on!_.
 
 #### Example
 
@@ -252,7 +256,7 @@ If your machine doesn’t have `python2.7`, install Python 2.x using
 
 If you:
 
-* want to handle resizing & optimization in the same step (this is the only loader that does that)
+* want to handle resizing AND optimization, not one or the other
 * need to optimize & resize every image differently
 * prefer writing `srcset` manually for complete control
 * have a good understanding on image formats & optimization in general

@@ -82,6 +82,7 @@ const mergeOptions = (source, loaderOptions, fileOptions) => {
       webp: { ...loaderOptions.webp, quality: 100 },
     },
     pathname: source,
+    ...loaderOptions,
   };
 };
 
@@ -177,10 +178,13 @@ module.exports = function loader(source) {
 
   // Our final function (accessible to loader scope)
   const complete = optimized => {
-    const message = options.skip
-      ? `${chalk.bold(options.filename)}: skipping…`
-      : reportSavings(options.filename, optimized.byteLength, sizeBefore);
-    console.log(message);
+    if (options.optimize.skip || options.emitFile === false) {
+      console.log(`${chalk.bold(options.filename)}: skipping…`);
+      return callback(null, fileLoader.call(this, optimized));
+    }
+    console.log(
+      reportSavings(options.filename, optimized.byteLength, sizeBefore)
+    );
 
     if (options.inline && options.extension === 'svg')
       return callback(null, rawLoader.call(this, optimized.toString()));
@@ -191,7 +195,8 @@ module.exports = function loader(source) {
   };
 
   // Path 1: complete (if skipping)
-  if (options.skip || options.emitFile === false) return complete(source);
+  if (options.optimize.skip || options.emitFile === false)
+    return complete(source);
 
   // Path 2: format -> resize -> optimize -> complete
   const formatted = format(options);
