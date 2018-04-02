@@ -12,7 +12,7 @@ all the following filetypes:
 | Filetype | Resizing | Optimization | Converting to |
 | :------- | :------: | :----------: | :-----------: |
 | JPG      |    ✅    |      ✅      |      ✅       |
-| PNG      |    ✅    |      ✅      |      ✅       |
+| PNG      |    ✅    | ⚠️ **SLOW**  |  ⚠️ **SLOW**  |
 | WebP     |    ✅    |      ✅      |      ✅       |
 | SVG      |   N/A    |      ✅      |      N/A      |
 | GIF      |          |      ✅      |               |
