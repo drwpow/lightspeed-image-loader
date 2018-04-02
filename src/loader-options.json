@@ -20,16 +20,11 @@
     },
     "outputPath": {
       "description": "Override webpack’s default output path for these images.",
-      "type": ["function", "string"]
+      "type": ["object", "string"]
     },
     "png": {
       "description": "Specify OptiPNG and PNGquant options together. ",
       "type": "object"
-    },
-    "quality": {
-      "description":
-        "Specify a number, `1`–`100`, to set the fallback quality when none is specified.",
-      "type": ["number", "string"]
     },
     "svg": {
       "description": "Alias of `svgo`. Override SVGO default settings.",

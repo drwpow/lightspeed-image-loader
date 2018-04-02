@@ -49,7 +49,6 @@ const mergeOptions = (source, loaderOptions, fileOptions) => {
     loaderOptions[newExtension].quality
   )
     newQuality = parseInt(loaderOptions[newExtension].quality, 10);
-  else if (loaderOptions.quality) newQuality = loaderOptions.quality;
 
   let gifQuality = newQuality;
   if (gifQuality > 3) gifQuality = gifsicleQuality(newQuality);

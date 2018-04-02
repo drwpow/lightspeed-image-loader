@@ -170,7 +170,7 @@ Apologies if you really were trying to optimize your GIF to 1–3% quality._
 #### Example
 
 ```js
-import myImage from './large.jpg?q=50&w=1200&f=webp';
+import myImage from './large.jpg?q=50&w=1200&f=webp'; // Convert to WebP, 50% quality, and 1200px wide
 ```
 
 _Note: this loader **will not** upscale images because it increases file size
@@ -186,7 +186,6 @@ the loader as usual:
 
 | Name         | Default       | Description                                                                                       |
 | :----------- | :------------ | :------------------------------------------------------------------------------------------------ |
-| `quality`    | `75`          | Specify a number, `1`–`100`, to set the fallback quality for all formats when none is specified.  |
 | `outputPath` | `output.path` | Override webpack’s default output path for these images (setting from [file-loader][fileloader]). |
 | `emitFile`   | `true`        | Set to `false` to skip processing file (setting from [file-loader][fileloader]).                  |
 | `gif`        | (object)      | Specify [GIFsicle][gifsicle] options.                                                             |
@@ -212,9 +211,11 @@ module: {
       use: {
         loader: 'optimize-image-loader',
         options: {
-          quality: 75,
           jpg: {
-            quality: 60,
+            quality: 60, // 1 – 100, higher is heavier
+          },
+          png: {
+            optimizationLevel: 5, // 0 = light; 7 = heavy compression
           },
           svgo: {
             addClassesToSVGElement: true,
