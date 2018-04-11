@@ -9,6 +9,7 @@ const imageminPngQuant = require('imagemin-pngquant');
 const imageminSVGO = require('imagemin-svgo');
 const imageminWebP = require('imagemin-webp');
 const { getOptions, parseQuery, urlToRequest } = require('loader-utils');
+const lqipLoader = require('lqip-loader');
 const rawLoader = require('raw-loader');
 const sharp = require('sharp');
 const urlLoader = require('url-loader');
@@ -85,6 +86,7 @@ const mergeOptions = (source, loaderOptions, fileOptions) => {
       webp: { ...loaderOptions.webp, quality: 100 },
     },
     pathname: source,
+    placeholder: fileOptions.placeholder,
     ...loaderOptions,
   };
 };
@@ -206,7 +208,10 @@ module.exports = function loader(source) {
   if (options.optimize.skip || options.emitFile === false)
     return complete(source);
 
-  // Path 2: format -> resize -> optimize -> complete
+  // Path 2: return LQIP-formatted image
+  if (options.placeholder) return lqipLoader.call(this, source);
+
+  // Path 3: format -> resize -> optimize -> complete
   const formatted = format(options, this);
   const resized = resize(formatted, options);
   return optimize(resized, options)

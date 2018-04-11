@@ -31,7 +31,7 @@
     "performance"
   ],
   "dependencies": {
-    "file-loader": "^1.1.11",
+    "chalk": "^2.3.2",
     "imagemin": "^5.3.1",
     "imagemin-gifsicle": "^5.2.0",
     "imagemin-mozjpeg": "^7.0.0",
@@ -39,20 +39,21 @@
     "imagemin-pngquant": "^5.1.0",
     "imagemin-svgo": "^6.0.0",
     "imagemin-webp": "^4.1.0",
-    "raw-loader": "^0.5.1",
-    "sharp": "^0.20.1",
-    "url-loader": "^1.0.1"
+    "sharp": "^0.20.1"
   },
   "devDependencies": {
-    "@babel/cli": "^7.0.0-beta.42",
-    "@babel/core": "^7.0.0-beta.42",
-    "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.42",
-    "@babel/preset-env": "^7.0.0-beta.42",
-    "copy-webpack-plugin": "^4.5.1",
+    "@babel/cli": "^7.0.0-beta.44",
+    "@babel/core": "^7.0.0-beta.44",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.44",
+    "@babel/preset-env": "^7.0.0-beta.44",
     "loader-utils": "^1.1.0",
     "schema-utils": "^0.4.5"
   },
   "peerDependencies": {
+    "file-loader": "^1.0.0",
+    "lqip-loader": "^2.0.0",
+    "raw-loader": "^0.5.0",
+    "url-loader": "^1.0.0",
     "webpack": "^3.0.0 || ^4.0.0"
   }
 }

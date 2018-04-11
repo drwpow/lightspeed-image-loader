@@ -10,7 +10,7 @@ module.exports = {
         use: 'babel-loader',
       },
       {
-        test: /(jpe?g|gif|png|svg)$/i,
+        test: /\.(jpe?g|gif|png|svg)$/i,
         use: {
           loader: 'optimize-image-loader',
           options: {
@@ -21,6 +21,7 @@ module.exports = {
     ],
   },
   plugins: [new CopyWebpackPlugin(['./index.html'])],
+  mode: 'development',
   resolveLoader: {
     alias: {
       'optimize-image-loader': path.resolve(__dirname, '..', '..'),

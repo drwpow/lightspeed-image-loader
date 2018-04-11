@@ -13,6 +13,7 @@ import svg from './original.svg';
 import svgInline from './original.svg?inline';
 import skip from './original.jpg?skip';
 import pixelArt from './pixel-art.png?w=500&interpolation=linear';
+import placeholder from './original.jpg?placeholder';
 
 const inlineSVG = () => ({
   __html: svgInline,
@@ -35,6 +36,13 @@ const App = () => (
     <div dangerouslySetInnerHtml={inlineSVG()} />
     <img src={skip} />
     <img src={pixelArt} />
+    <div
+      style={{
+        backgroundImage: `url(${placeholder})`,
+        height: '64px',
+        width: '64px',
+      }}
+    />
   </div>
 );
 

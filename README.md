@@ -4,10 +4,12 @@
 
 # Optimize Image Loader
 
-On-the-fly responsive image resizing, and A+ optimization. Uses
+On-the-fly responsive image resizing and minification for webpack v4. Uses
 [mozjpeg][mozjpeg], [GIFsicle][gifsicle], [OptiPNG][optipng], and
-[SVGO][svgo], and even supports [WebP][webp]. Use this image loader to handle
-all the following filetypes:
+[SVGO][svgo], supports [WebP][webp], and can generate placeholders via
+[LQIP][lqip-loader].
+
+### Support
 
 | Filetype | Resizing | Optimization | Converting to |
 | :------- | :------: | :----------: | :-----------: |
@@ -24,7 +26,7 @@ sharp library._
 ## Installation
 
 ```
-npm i --save-dev optimize-image-loader
+npm i --save-dev optimize-image-loader lqip-loader file-loader url-loader raw-loader
 ```
 
 ## Usage
@@ -37,7 +39,7 @@ In your **webpack config,** add the following:
 module: {
   rules: [
     {
-      test: /(jpe?g|gif|png|svg)/i,
+      test: /\.(jpe?g|gif|png|svg)/i,
       use: 'optimize-image-loader'
     }
   ],
@@ -137,6 +139,17 @@ import inlineSVG from './myimage.svg?inline';
 import pixelArt from './pixel-art?w=2048&interpolation=nearest';
 ```
 
+#### Blurry image placeholder while image loads (React)
+
+```js
+import image from './myimage.jpg';
+import placeholder from './myimage.jpg?placeholder';
+
+<div style={{ backgroundImage: `url(${placeholder})` }}>
+  <img src={image} />
+</div>;
+```
+
 ## Options
 
 Specifying options per-image is the preferred method of this loader. By
@@ -158,7 +171,8 @@ webpack config as your images change.
 | `inline`        | `false`     | Set to `?inline` or `?inline=true` to return the individual image in base64 data URI, or raw SVG code 🎉.                                                                                                                                                                                                                                  |
 | `format`        | (same)      | Specify `jpg`, `webp`, or `png` to convert format from the original.                                                                                                                                                                                                                                                                       |
 | `f`             |             | Shortcut for `format`.                                                                                                                                                                                                                                                                                                                     |
-| `skip`          | `false`     | Set to `?skip` or `?skip=true` to bypass resizing & optimization entirely. This is particularly useful for SVGs that don’t optimize well.                                                                                                                                                                                                  |
+| `placeholder`   | `false`     | Specify `?placeholder` to load a [LQIP][lqip-loader]-generated placeholder                                                                                                                                                                                                                                                                 |
+| `skip`          | `false`     | Set to `?skip` to bypass resizing & optimization entirely. This is particularly useful for SVGs that don’t optimize well.                                                                                                                                                                                                                  |
 
 _<sup>†</sup> [GIFsicle][gifsicle] uses a different `1`–`3` scale for
 compression, where `1` is least compressed and `3` is most, compared to other
@@ -184,19 +198,19 @@ inline, but there are some settings which make sense to set globally, such as
 [SVGO][svgo] settings, or a fallback quality. In these cases, pass options to
 the loader as usual:
 
-| Name         | Default       | Description                                                                                       |
-| :----------- | :------------ | :------------------------------------------------------------------------------------------------ |
-| `outputPath` | `output.path` | Override webpack’s default output path for these images (setting from [file-loader][fileloader]). |
-| `emitFile`   | `true`        | Set to `false` to skip processing file (setting from [file-loader][fileloader]).                  |
-| `gif`        | (object)      | Specify [GIFsicle][gifsicle] options.                                                             |
-| `jpg`        | (object)      | Specify [mozjpeg][mozjpeg] options.                                                               |
-| `jpeg`       |               | Alias of `jpg`.                                                                                   |
-| `png`        | (object)      | Specify [OptiPNG][optipng] and [PNGquant][pngquant] options together.                             |
-| `svgo`       | (object)      | Override [SVGO][svgo] default settings.                                                           |
-| `svg`        |               | Alias of `svgo` (no other SVG options to set).                                                    |
+| Name         | Default       | Description                                                                                        |
+| :----------- | :------------ | :------------------------------------------------------------------------------------------------- |
+| `outputPath` | `output.path` | Override webpack’s default output path for these images (setting from [file-loader][file-loader]). |
+| `emitFile`   | `true`        | Set to `false` to skip processing file (setting from [file-loader][file-loader]).                  |
+| `gif`        | (object)      | Specify [GIFsicle][gifsicle] options.                                                              |
+| `jpg`        | (object)      | Specify [mozjpeg][mozjpeg] options.                                                                |
+| `jpeg`       |               | Alias of `jpg`.                                                                                    |
+| `png`        | (object)      | Specify [OptiPNG][optipng] and [PNGquant][pngquant] options together.                              |
+| `svgo`       | (object)      | Override [SVGO][svgo] default settings.                                                            |
+| `svg`        |               | Alias of `svgo` (no other SVG options to set).                                                     |
 
-_Note: because this loader passes images on to [file-loader][fileloader],
-[url-loader][urlloader], or [raw-loader][rawloader], the same is true of
+_Note: because this loader passes images on to [file-loader][file-loader],
+[url-loader][url-loader], or [raw-loader][raw-loader], the same is true of
 loader options! You should be able to use any options from those loaders
 within this config. However, **don’t use this loader for anything other than
 images!** You’ll still need those loaders for all other file types._
@@ -277,7 +291,8 @@ Then this loader was made for you!
 This loader wouldn’t be possible without the significant achievements of:
 
 * [@kevva][@kevva] for [imagemin][imagemin]
-* [@sokra][@sokra], [@d3viant0ne][@d3viant0ne], and [@michael-ciniawsky][@michael-ciniawsky] for [file-loader][fileloader], [url-loader][urlloader], and [raw-loader][rawloader]
+* [@zouhir][@zouhir] for [lqip-loader][lqip-loader]
+* [@sokra][@sokra], [@d3viant0ne][@d3viant0ne], and [@michael-ciniawsky][@michael-ciniawsky] for [file-loader][file-loader], [url-loader][url-loader], and [raw-loader][raw-loader]
 * [@lovell][@lovell] for [sharp][sharp]
 
 [@d3viant0ne]: https://github.com/d3viant0ne
@@ -285,21 +300,23 @@ This loader wouldn’t be possible without the significant achievements of:
 [@lovell]: https://github.com/@lovell
 [@michael-ciniawsky]: https://github.com/@michael-ciniawsky
 [@sokra]: https://github.com/sokra
+[@zouhir]: https://github.com/zouhir
 [csstricks]: https://css-tricks.com/using-webp-images/
+[file-loader]: https://github.com/webpack-contrib/file-loader
 [gifsicle]: https://github.com/imagemin/imagemin-gifsicle
-[fileloader]: https://github.com/webpack-contrib/file-loader
 [homebrew]: https://brew.sh/
 [imagemin]: https://github.com/imagemin/imagemin
 [lanczos]: https://en.wikipedia.org/wiki/Lanczos_resampling
+[lqip-loader]: https://github.com/zouhir/lqip-loader
 [mozjpeg]: https://github.com/imagemin/imagemin-mozjpeg
 [node-gyp]: https://github.com/nodejs/node-gyp/issues/1337
 [optipng]: https://github.com/imagemin/imagemin-optipng
 [pngquant]: https://github.com/imagemin/imagemin-pngquant
-[rawloader]: https://github.com/webpack-contrib/raw-loader
+[raw-loader]: https://github.com/webpack-contrib/raw-loader
 [sharp]: https://github.com/lovell/sharp
-[status]: https://david-dm.org/dangodev/optimize-image-loader/status.svg
 [status-dev]: https://david-dm.org/dangodev/optimize-image-loader/dev-status.svg
+[status]: https://david-dm.org/dangodev/optimize-image-loader/status.svg
 [svgo]: https://github.com/svg/svgo
-[urlloader]: https://github.com/webpack-contrib/url-loader
+[url-loader]: https://github.com/webpack-contrib/url-loader
 [version]: https://badge.fury.io/js/optimize-image-loader.svg
 [webp]: https://github.com/imagemin/imagemin-webp
