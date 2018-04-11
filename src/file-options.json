@@ -13,12 +13,12 @@
     },
     "h": {
       "description":
-        "Shortcut for `height`. Specify a number to downsize the image width to (in pixels). Width will scale automatically. Won’t upscale image. If `height` and `width` are specified, width takes priority.",
+        "Shortcut for `height`. Scale image height (in pixels). Leave `width` blank to auto-scale. Specify `width` and `height` to ensure image is smaller than both.",
       "type": ["number", "string"]
     },
     "height": {
       "description":
-        "Specify a number to downsize the image width to (in pixels). Width will scale automatically. Won’t upscale image. If `height` and `width` are specified, width takes priority.",
+        "Scale image height (in pixels). Leave `width` blank to auto-scale. Specify `width` and `height` to ensure image is smaller than both.",
       "type": ["number", "string"]
     },
     "inline": {
@@ -30,6 +30,11 @@
       "description":
         "When scaling, specify `'nearest'` for nearest-neighbor (pixel art), `'cubic'` for cubic interpolation, or `'lanczos2'` or `'lanczos3'` for [Lanczos][lanczos] with `a=2` or `a=3`. `'cubic'` is this loader’s default (because it’s what most are used to), as opposed to`'lanczos3'` which is sharp’s default (present for other loaders)",
       "type": "string"
+    },
+    "placeholder": {
+      "description":
+        "Shortcut for `quality`. Specify a number, `1`–`100`, to reduce the image’s quality and filesize.",
+      "type": ["boolean", "string"]
     },
     "q": {
       "description":
@@ -44,16 +49,16 @@
     "skip": {
       "description":
         "Set to `?skip` or `?skip=true` to bypass resizing & optimization entirely. Useful for problem images.",
-      "type": ["string", "boolean"]
+      "type": ["boolean", "string"]
     },
     "w": {
       "description":
-        "Shortcut for `width`. Specify a number to downsize the image width to (in pixels). Height will scale automatically. Won’t upscale image. Ignored for SVG.",
+        "Shortcut for `width`. Set image width (in pixels). Leave `height` blank to auto-scale. Specify `width` and `height` to ensure image is smaller than both.",
       "type": ["number", "string"]
     },
     "width": {
       "description":
-        "Specify a number to downsize the image width to (in pixels). Height will scale automatically. Won’t upscale image. Ignored for SVG.",
+        "Set image width (in pixels). Leave `height` blank to auto-scale. Specify `width` and `height` to ensure image is smaller than both.",
       "type": ["number", "string"]
     }
   },

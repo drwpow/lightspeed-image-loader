@@ -6,8 +6,8 @@
 
 On-the-fly responsive image resizing and minification for webpack v4. Uses
 [mozjpeg][mozjpeg], [GIFsicle][gifsicle], [OptiPNG][optipng], and
-[SVGO][svgo], supports [WebP][webp], and can generate placeholders via
-[LQIP][lqip-loader].
+[SVGO][svgo], supports [WebP][webp], and can even generate Medium.com-style
+low-quality image placeholders (LQIP) for loading.
 
 ### Support
 
@@ -26,14 +26,14 @@ sharp library._
 ## Installation
 
 ```
-npm i --save-dev optimize-image-loader lqip-loader file-loader url-loader raw-loader
+npm i --save-dev optimize-image-loader
 ```
 
 ## Usage
 
 ### Simple usage
 
-In your **webpack config,** add the following:
+In your **[production webpack config][webpack-prod],** add the following:
 
 ```js
 module: {
@@ -142,13 +142,15 @@ import pixelArt from './pixel-art?w=2048&interpolation=nearest';
 #### Blurry image placeholder while image loads (React)
 
 ```js
-import image from './myimage.jpg';
+import image from './myimage.jpg?w=1200';
 import placeholder from './myimage.jpg?placeholder';
 
 <div style={{ backgroundImage: `url(${placeholder})` }}>
   <img src={image} />
 </div>;
 ```
+
+_Note: placeholders can’t be generated for SVGs_
 
 ## Options
 
@@ -171,7 +173,7 @@ webpack config as your images change.
 | `inline`        | `false`     | Set to `?inline` or `?inline=true` to return the individual image in base64 data URI, or raw SVG code 🎉.                                                                                                                                                                                                                                  |
 | `format`        | (same)      | Specify `jpg`, `webp`, or `png` to convert format from the original.                                                                                                                                                                                                                                                                       |
 | `f`             |             | Shortcut for `format`.                                                                                                                                                                                                                                                                                                                     |
-| `placeholder`   | `false`     | Specify `?placeholder` to load a [LQIP][lqip-loader]-generated placeholder                                                                                                                                                                                                                                                                 |
+| `placeholder`   | `false`     | Specify `?placeholder` to return a low-quality image placeholder (technically this can be used alongside other options, but it’s not advised).                                                                                                                                                                                             |
 | `skip`          | `false`     | Set to `?skip` to bypass resizing & optimization entirely. This is particularly useful for SVGs that don’t optimize well.                                                                                                                                                                                                                  |
 
 _<sup>†</sup> [GIFsicle][gifsicle] uses a different `1`–`3` scale for
@@ -209,11 +211,11 @@ the loader as usual:
 | `svgo`       | (object)      | Override [SVGO][svgo] default settings.                                                            |
 | `svg`        |               | Alias of `svgo` (no other SVG options to set).                                                     |
 
-_Note: because this loader passes images on to [file-loader][file-loader],
-[url-loader][url-loader], or [raw-loader][raw-loader], the same is true of
-loader options! You should be able to use any options from those loaders
-within this config. However, **don’t use this loader for anything other than
-images!** You’ll still need those loaders for all other file types._
+_Note: because this loader passes images on to [file-loader][file-loader], or
+[raw-loader][raw-loader], the same is true of loader options! You should be
+able to use any options from those loaders within this config. However,
+**don’t use this loader for anything other than images!** You’ll still need
+those loaders for all other file types._
 
 #### Example
 
@@ -273,41 +275,49 @@ using yarn).
 
 If your machine doesn’t have `python2.7`, install Python 2.x using
 [Homebrew][homebrew] or some other means, and set that executable with
-`npm config set python /path/to/python2` or `yarn config set python /path/to/python2`
+`npm config set python /path/to/python2` or
+`yarn config set python /path/to/python2`
 
-## Is this image loader for me?
+## FAQ
 
-If you:
+### Why do I have to use one `import` per size?
 
-* want to handle resizing AND optimization, not one or the other
-* need to optimize & resize every image differently
-* prefer writing `srcset` manually for complete control
-* have a good understanding on image formats & optimization in general
+There are several advantages to this method:
 
-Then this loader was made for you!
+* **Control**: You can declare options per-size, and fix issues where a particular image size requires different settings.
+* **Speed**: Specifying options per-file keeps the loader fast by only applying operations you specify (e.g., a placeholder image isn’t needlessly generated if you don’t specify one—this can severely slow down build times with many images)
+* **Simplicity**: There’s no syntax to memorize; one reference = one image URL or data-URI
+
+### Why doesn’t this loader chain nicely with others?
+
+Two reasons: first, image optimization / resizing has a particular order that
+needs to be kept: resizing first, then optimization. Always. If there’s only
+one proper order for images, and if one loader does it all, why chain?
+
+Second, and more importantly, webpack only lets you select a loader based on
+a module’s filename. So you couldn’t configure any combination of loaders
+that let you conditionally output a URL, data URI, SVG code, and/or
+placeholders via query strings.
 
 ## Special Thanks
 
 This loader wouldn’t be possible without the significant achievements of:
 
 * [@kevva][@kevva] for [imagemin][imagemin]
-* [@zouhir][@zouhir] for [lqip-loader][lqip-loader]
-* [@sokra][@sokra], [@d3viant0ne][@d3viant0ne], and [@michael-ciniawsky][@michael-ciniawsky] for [file-loader][file-loader], [url-loader][url-loader], and [raw-loader][raw-loader]
+* [@sokra][@sokra], [@d3viant0ne][@d3viant0ne], and [@michael-ciniawsky][@michael-ciniawsky] for [file-loader][file-loader] and [raw-loader][raw-loader]
 * [@lovell][@lovell] for [sharp][sharp]
 
 [@d3viant0ne]: https://github.com/d3viant0ne
 [@kevva]: https://github.com/kevva
-[@lovell]: https://github.com/@lovell
-[@michael-ciniawsky]: https://github.com/@michael-ciniawsky
+[@lovell]: https://github.com/lovell
+[@michael-ciniawsky]: https://github.com/michael-ciniawsky
 [@sokra]: https://github.com/sokra
-[@zouhir]: https://github.com/zouhir
 [csstricks]: https://css-tricks.com/using-webp-images/
 [file-loader]: https://github.com/webpack-contrib/file-loader
 [gifsicle]: https://github.com/imagemin/imagemin-gifsicle
 [homebrew]: https://brew.sh/
 [imagemin]: https://github.com/imagemin/imagemin
 [lanczos]: https://en.wikipedia.org/wiki/Lanczos_resampling
-[lqip-loader]: https://github.com/zouhir/lqip-loader
 [mozjpeg]: https://github.com/imagemin/imagemin-mozjpeg
 [node-gyp]: https://github.com/nodejs/node-gyp/issues/1337
 [optipng]: https://github.com/imagemin/imagemin-optipng
@@ -317,6 +327,6 @@ This loader wouldn’t be possible without the significant achievements of:
 [status-dev]: https://david-dm.org/dangodev/optimize-image-loader/dev-status.svg
 [status]: https://david-dm.org/dangodev/optimize-image-loader/status.svg
 [svgo]: https://github.com/svg/svgo
-[url-loader]: https://github.com/webpack-contrib/url-loader
 [version]: https://badge.fury.io/js/optimize-image-loader.svg
 [webp]: https://github.com/imagemin/imagemin-webp
+[webpack-prod]: https://webpack.js.org/guides/production/

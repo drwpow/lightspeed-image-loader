@@ -1,6 +1,6 @@
 {
   "name": "optimize-image-loader",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "webpack loader for optimized, responsive images. Works with React, Vue, and all frontend setups.",
   "main": "dist",
   "files": [
@@ -32,6 +32,7 @@
   ],
   "dependencies": {
     "chalk": "^2.3.2",
+    "file-loader": "^1.1.11",
     "imagemin": "^5.3.1",
     "imagemin-gifsicle": "^5.2.0",
     "imagemin-mozjpeg": "^7.0.0",
@@ -39,6 +40,7 @@
     "imagemin-pngquant": "^5.1.0",
     "imagemin-svgo": "^6.0.0",
     "imagemin-webp": "^4.1.0",
+    "raw-loader": "^0.5.1",
     "sharp": "^0.20.1"
   },
   "devDependencies": {
@@ -46,14 +48,13 @@
     "@babel/core": "^7.0.0-beta.44",
     "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.44",
     "@babel/preset-env": "^7.0.0-beta.44",
+    "babel-eslint": "^8.2.2",
+    "eslint": "^4.19.1",
+    "eslint-config-google": "^0.9.1",
     "loader-utils": "^1.1.0",
     "schema-utils": "^0.4.5"
   },
   "peerDependencies": {
-    "file-loader": "^1.0.0",
-    "lqip-loader": "^2.0.0",
-    "raw-loader": "^0.5.0",
-    "url-loader": "^1.0.0",
     "webpack": "^3.0.0 || ^4.0.0"
   }
 }
