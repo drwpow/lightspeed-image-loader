@@ -17,7 +17,7 @@ low-quality image placeholders (LQIP) for loading.
 | PNG      |    ✅    | ⚠️ **SLOW**  |  ⚠️ **SLOW**  |
 | WebP     |    ✅    |      ✅      |      ✅       |
 | SVG      |   N/A    |      ✅      |      N/A      |
-| GIF      |          |      ✅      |               |
+| GIF      |    🚫    |      ✅      |      🚫       |
 
 _Note: GIF resizing/conversion isn’t supported due to lack of support in
 [sharp][sharp]. Overall, it’s a small price to pay for the build speed of the
@@ -90,7 +90,7 @@ import large from './myimage.jpg?w=1800&q=65';
 ..
 
 <img
-  srcset={`${medium} 1200w, ${large} 1800w, ${medium} 2x, ${large} 3x`}
+  srcset={`${medium} 1200w, ${large} 1800w`}
   src={small}
   alt="image description"
 />
@@ -161,27 +161,24 @@ webpack config as your images change.
 
 ### Query Options
 
-| Name            | Default     | Description                                                                                                                                                                                                                                                                                                                                |
-| :-------------- | :---------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `width`         | (original)  | Set image width (in pixels). Leave `height` blank to auto-scale. Specify `width` and `height` to ensure image is smaller than both.                                                                                                                                                                                                        |
-| `w`             |             | Shortcut for `width`.                                                                                                                                                                                                                                                                                                                      |
-| `height`        | (original)  | Scale image height (in pixels). Leave `width` blank to auto-scale. Specify `width` and `height` to ensure image is smaller than both.                                                                                                                                                                                                      |
-| `h`             |             | Shortcut for `height`.                                                                                                                                                                                                                                                                                                                     |
-| `quality`       | `75` or `1` | JPEG & WebP: specify `1`–`100`, to set the image’s quality. GIF: specify `1` for least compressed, `3` for most compressed<sup>†</sup>. Compress as much as possible before degradation is noticable.                                                                                                                                      |
-| `q`             |             | Shortcut for `quality`.                                                                                                                                                                                                                                                                                                                    |
-| `interpolation` | `'cubic'`   | When scaling, specify `'nearest'` for nearest-neighbor (pixel art), `'cubic'` for cubic interpolation, or `'lanczos2'` or `'lanczos3'` for [Lanczos][lanczos] with `a=2` or `a=3`. `'cubic'` is this loader’s default (because it’s what most are used to), as opposed to`'lanczos3'` which is sharp’s default (present for other loaders) |
-| `inline`        | `false`     | Set to `?inline` or `?inline=true` to return the individual image in base64 data URI, or raw SVG code 🎉.                                                                                                                                                                                                                                  |
-| `format`        | (same)      | Specify `jpg`, `webp`, or `png` to convert format from the original.                                                                                                                                                                                                                                                                       |
-| `f`             |             | Shortcut for `format`.                                                                                                                                                                                                                                                                                                                     |
-| `placeholder`   | `false`     | Specify `?placeholder` to return a low-quality image placeholder (technically this can be used alongside other options, but it’s not advised).                                                                                                                                                                                             |
-| `skip`          | `false`     | Set to `?skip` to bypass resizing & optimization entirely. This is particularly useful for SVGs that don’t optimize well.                                                                                                                                                                                                                  |
+| Name            | Default    | Description                                                                                                                                                                                                                                                                                                                                |
+| :-------------- | :--------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `width`         | (original) | Set image width (in pixels). Leave `height` blank to auto-scale. Specify `width` and `height` to ensure image is smaller than both.                                                                                                                                                                                                        |
+| `w`             |            | Shortcut for `width`.                                                                                                                                                                                                                                                                                                                      |
+| `height`        | (original) | Scale image height (in pixels). Leave `width` blank to auto-scale. Specify `width` and `height` to ensure image is smaller than both.                                                                                                                                                                                                      |
+| `h`             |            | Shortcut for `height`.                                                                                                                                                                                                                                                                                                                     |
+| `quality`       | `70`       | Specify `1`–`100` to set the image’s quality<sup>\*</sup>. For each image, set it as low as possible before compression is noticeable at display size.                                                                                                                                                                                     |
+| `q`             |            | Shortcut for `quality`.                                                                                                                                                                                                                                                                                                                    |
+| `interpolation` | `'cubic'`  | When scaling, specify `'nearest'` for nearest-neighbor (pixel art), `'cubic'` for cubic interpolation, or `'lanczos2'` or `'lanczos3'` for [Lanczos][lanczos] with `a=2` or `a=3`. `'cubic'` is this loader’s default (because it’s what most are used to), as opposed to`'lanczos3'` which is sharp’s default (present for other loaders) |
+| `inline`        | `false`    | Set to `?inline` or `?inline=true` to return the individual image in base64 data URI, or raw SVG code 🎉.                                                                                                                                                                                                                                  |
+| `format`        | (same)     | Specify `jpg`, `webp`, or `png` to convert format from the original.                                                                                                                                                                                                                                                                       |
+| `f`             |            | Shortcut for `format`.                                                                                                                                                                                                                                                                                                                     |
+| `placeholder`   | `false`    | Specify `?placeholder` to return a low-quality image placeholder (technically this can be used alongside other options, but it’s not advised).                                                                                                                                                                                             |
+| `skip`          | `false`    | Set to `?skip` to bypass resizing & optimization entirely. This is particularly useful for SVGs that don’t optimize well.                                                                                                                                                                                                                  |
 
-_<sup>†</sup> [GIFsicle][gifsicle] uses a different `1`–`3` scale for
-compression, where `1` is least compressed and `3` is most, compared to other
-optimizers’ percentage quality scale. For GIFs, if you specify `q=4` or
-greater, it will convert the percentage for you (`4`–`33` is most compressed,
-`34`–`66` is medium compression, and `67`–`100` is light compression).
-Apologies if you really were trying to optimize your GIF to 1–3% quality._
+_<sup>\*</sup> Note: GIFsicle and OptiPNG don’t use a 1–100 quality scale, so
+`quality` will convert for you. However, if using loader options below, you’ll
+need to specify the proper options there._
 
 #### Example
 
@@ -204,12 +201,11 @@ the loader as usual:
 | :----------- | :------------ | :------------------------------------------------------------------------------------------------- |
 | `outputPath` | `output.path` | Override webpack’s default output path for these images (setting from [file-loader][file-loader]). |
 | `emitFile`   | `true`        | Set to `false` to skip processing file (setting from [file-loader][file-loader]).                  |
-| `gif`        | (object)      | Specify [GIFsicle][gifsicle] options.                                                              |
-| `jpg`        | (object)      | Specify [mozjpeg][mozjpeg] options.                                                                |
-| `jpeg`       |               | Alias of `jpg`.                                                                                    |
-| `png`        | (object)      | Specify [OptiPNG][optipng] and [PNGquant][pngquant] options together.                              |
-| `svgo`       | (object)      | Override [SVGO][svgo] default settings.                                                            |
-| `svg`        |               | Alias of `svgo` (no other SVG options to set).                                                     |
+| `gifsicle`   | (object)      | Specify GIFsicle options.                                                                          |
+| `mozjpeg`    | (object)      | Specify [mozjpeg][mozjpeg] options.                                                                |
+| `optipng`    | (object)      | Specify OptiPNG options ([view options][optipng-options]).                                         |
+| `pngquant`   | (object)      | Specify [PNGquant][pngquant] options.                                                              |
+| `svgo`       | (object)      | Specify [SVGO][svgo] default settings.                                                             |
 
 _Note: because this loader passes images on to [file-loader][file-loader], or
 [raw-loader][raw-loader], the same is true of loader options! You should be
@@ -227,10 +223,10 @@ module: {
       use: {
         loader: 'optimize-image-loader',
         options: {
-          jpg: {
+          mozjpeg: {
             quality: 60, // 1 – 100, higher is heavier
           },
-          png: {
+          pngquant: {
             optimizationLevel: 5, // 0 = light; 7 = heavy compression
           },
           svgo: {
@@ -294,10 +290,11 @@ Two reasons: first, image optimization / resizing has a particular order that
 needs to be kept: resizing first, then optimization. Always. If there’s only
 one proper order for images, and if one loader does it all, why chain?
 
-Second, and more importantly, webpack only lets you select a loader based on
-a module’s filename. So you couldn’t configure any combination of loaders
-that let you conditionally output a URL, data URI, SVG code, and/or
-placeholders via query strings.
+Second, and more importantly, webpack can only pass a file through a loader
+based on `test` (which typically coincides with extension). So you couldn’t,
+say, take one `.jpg` file and output a URL, and take another `.jpg` file and
+output an inline base64-encoded version. You’d need to handle every extension
+the same way. This gives you the freedom to handle each image differently.
 
 ## Special Thanks
 
@@ -321,6 +318,7 @@ This loader wouldn’t be possible without the significant achievements of:
 [mozjpeg]: https://github.com/imagemin/imagemin-mozjpeg
 [node-gyp]: https://github.com/nodejs/node-gyp/issues/1337
 [optipng]: https://github.com/imagemin/imagemin-optipng
+[optipng-options]: https://github.com/dangodev/optimize-image-loader/wiki/OptiPNG-Settings
 [pngquant]: https://github.com/imagemin/imagemin-pngquant
 [raw-loader]: https://github.com/webpack-contrib/raw-loader
 [sharp]: https://github.com/lovell/sharp

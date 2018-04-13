@@ -13,12 +13,16 @@ const rawLoader = require('raw-loader');
 const sharp = require('sharp');
 const validateOptions = require('schema-utils');
 
-const loaderSchema = require('./loader-options.json');
-const fileSchema = require('./file-options.json');
+const loaderSchema = require('./config/loader.json');
+const fileSchema = require('./config/file.json');
+const mozjpegDefaults = require('./config/mozjpeg');
+const optipngDefaults = require('./config/optipng');
+const pngquantDefaults = require('./config/pngquant');
+const webpDefaults = require('./config/webp');
 
 /* Constants */
 
-const DEFAULT_QUALITY = 60;
+const DEFAULT_QUALITY = 70;
 const LQIP_WIDTH = 32; // in px
 const MIME_TYPES = {
   gif: 'image/gif',
@@ -43,6 +47,9 @@ const gifsicleQuality = (q) =>
 const normalizeExtension = (filename) =>
   typeof filename === 'string' ? filename.replace(/jpeg/i, 'jpg') : filename;
 
+const optipngQuality = (q) =>
+  Math.min(1, Math.max(7, Math.ceil((100 - q) / (100 / 7))));
+
 const mergeOptions = (source, loaderOptions, fileOptions, NODE_ENV) => {
   const extension = normalizeExtension(
     source.match(/\.[0-9a-z]+$/i)[0]
@@ -63,10 +70,6 @@ const mergeOptions = (source, loaderOptions, fileOptions, NODE_ENV) => {
     newQuality = parseInt(loaderOptions[newExtension].quality, 10);
   }
 
-  let gifQuality = newQuality;
-  if (gifQuality > 3) gifQuality = gifsicleQuality(newQuality);
-  if (gifQuality < 1) gifQuality = 1;
-
   return {
     format: newFormat,
     extension: newExtension,
@@ -74,23 +77,29 @@ const mergeOptions = (source, loaderOptions, fileOptions, NODE_ENV) => {
     filename,
     mimetype: MIME_TYPES[newExtension],
     optimize: {
-      gif: {
-        ...loaderOptions.gif,
-        optimizationLevel: gifQuality,
+      gifsicle: {
+        ...loaderOptions.gifsicle,
+        optimizationLevel: gifsicleQuality(newQuality),
       },
       height: parseInt(fileOptions.height || fileOptions.h, 10) || null,
-      jpg: {
-        ...(loaderOptions.jpg || loaderOptions.jpeg),
+      mozjpeg: {
+        ...mozjpegDefaults,
+        ...loaderOptions.mozjpeg,
         quality: newQuality,
       },
-      png: {...loaderOptions.png},
-      quality: newQuality,
+      optipng: {
+        ...optipngDefaults,
+        ...loaderOptions.optipng,
+        optimizationLevel: optipngQuality(newQuality),
+      },
+      pngquant: {
+        ...pngquantDefaults,
+        ...loaderOptions.pngquant,
+        quality: newQuality,
+      },
       skip: fileOptions.skip && fileOptions.skip.toString() !== 'false',
       svgo: {...(loaderOptions.svgo || loaderOptions.svg)},
-      webp: {
-        ...loaderOptions.webp,
-        quality: newQuality,
-      },
+      webp: {...webpDefaults, ...loaderOptions.webp, quality: newQuality},
       width: parseInt(fileOptions.width || fileOptions.w) || null,
     },
     sharp: {
@@ -115,15 +124,14 @@ const reportSavings = ({filename, extension}, newSize, oldSize) => {
   }
 
   const verb = sizeDiff >= 0 ? 'saved' : 'lost';
-  const color = sizeDiff >= 0 ? chalk.green : chalk.red;
+  const color =
+    sizeDiff >= 0 ? chalk.rgb(45, 177, 107) : chalk.rgb(255, 93, 93);
 
   return `${chalk.bold(`${filename}${format}`)}: ${verb} ${color(
     `${chalk.bold(
       `${Math.ceil(SAVINGS_SPECIFICITY * sizeDiff / 1028) /
         SAVINGS_SPECIFICITY} KB`
-    )} (${Math.ceil(
-      SAVINGS_SPECIFICITY * (SAVINGS_SPECIFICITY * sizeDiff / oldSize)
-    ) / SAVINGS_SPECIFICITY}% / ${bTo3G(sizeDiff)} on 3G)`
+    )} (${Math.ceil(100 * sizeDiff / oldSize)}% / ${bTo3G(sizeDiff)} on 3G)`
   )}`;
 };
 
@@ -131,15 +139,15 @@ const reportSavings = ({filename, extension}, newSize, oldSize) => {
 
 const optimize = (
   source,
-  {extension, optimize: {gif, jpg, png, svgo, webp}}
+  {extension, optimize: {gifsicle, mozjpeg, pngquant, optipng, svgo, webp}}
 ) => {
   const plugins = [
-    plugins.push(imageminMozjpeg(jpg)),
-    plugins.push(imageminOptiPng(png)),
-    plugins.push(imageminPngQuant(png)),
-    plugins.push(imageminGifsicle(gif)),
-    plugins.push(imageminSVGO(svgo)),
-    plugins.push(imageminWebP(webp)),
+    imageminGifsicle(gifsicle), // GIF
+    imageminMozjpeg(mozjpeg), // JPG
+    imageminPngQuant(pngquant), // PNG step 2
+    imageminOptiPng(optipng), // PNG step 3
+    imageminSVGO(svgo), // SVG
+    imageminWebP(webp), // WebP
   ];
   if (typeof source.toBuffer === 'function') {
     return source
@@ -205,20 +213,18 @@ module.exports = function loader(source) {
       console.log(reportSavings(options, optimized.byteLength, sizeBefore));
     }
 
-    if (options.inline && options.extension === 'svg') {
+    if (options.extension === 'svg' && options.inline) {
       return callback(null, rawLoader.call(this, optimized.toString()));
     } else if (options.placeholder) {
       return sharp(source)
         .metadata()
         .then(({height, width}) => {
           const id = `lqip-${options.filename.replace(/(\.|\s)/g, '-')}`;
+          const lqip = dataURI(optimized, options.mimetype);
           const h = Math.round(LQIP_WIDTH * height / width);
           const svg = dataURI(
             Buffer.from(
-              `<svg viewBox="0 0 32 ${h}"><filter id="${id}"><feGaussianBlur stdDeviation="2" /><feColorMatrix type="matrix" values="1 0 0 0 0, 0 1 0 0 0, 0 0 1 0 0, 0 0 0 9 0" /><feComposite in2="SourceGraphic" operator="in" /></filter><image filter="url(#${id})" xlink:href="${dataURI(
-                optimized,
-                options.mimetype
-              )}" /></svg>`
+              `<svg viewBox="0 0 ${LQIP_WIDTH} ${h}" xmlns="http://www.w3.org/2000/svg"><filter id="${id}"><feGaussianBlur stdDeviation="2" /><feColorMatrix type="matrix" values="1 0 0 0 0, 0 1 0 0 0, 0 0 1 0 0, 0 0 0 9 0" /><feComposite in2="SourceGraphic" operator="in" /></filter><image filter="url(#${id})" height="${h}" width="${LQIP_WIDTH}" xlink:href="${lqip}" /></svg>`
             ),
             MIME_TYPES.svg
           );

@@ -5,7 +5,7 @@ import jpg from './original.jpg?quality=50&w=200';
 import jpgDupe from './original.jpg?q=50&width=200';
 import jpgLarge from './original.jpg?quality=80&w=500';
 import jpgInline from './original.jpg?inline&q=80&w=500';
-// import jpgToPNG from './original.jpg?f=png';
+import jpgToPNG from './original.jpg?f=png';
 import jpgToWebP from './original.jpg?f=webp&w=1200';
 import gif from './original.gif?h=20';
 import png from './original.png?w=200';
@@ -37,7 +37,7 @@ const App = () => (
       }}
     />
     <img src={jpgLarge} />
-    {/* <img src={jpgToPNG} /> */}
+    <img src={jpgToPNG} />
     <img src={jpgToWebP} />
     <img src={gif} />
     <img src={png} />
