@@ -31,12 +31,8 @@ const MIME_TYPES = {
   svg: 'image/svg+xml',
   webp: 'image/webp',
 };
-const SAVINGS_SPECIFICITY = 10;
 
 /* Utils */
-
-// Convert bits to seconds, assuming 1.5 Mb/s download
-const bTo3G = (kb) => `${Math.ceil(10 * (kb / 1000000) / 1.5) / 10}s`;
 
 const dataURI = (buffer, mime) =>
   `data:${mime};base64,${buffer.toString('base64')}`;
@@ -49,6 +45,8 @@ const normalizeExtension = (filename) =>
 
 const optipngQuality = (q) =>
   Math.min(1, Math.max(7, Math.ceil((100 - q) / (100 / 7))));
+
+const toKB = (b) => Math.round(10 * b / 1028) / 10;
 
 const mergeOptions = (source, loaderOptions, fileOptions, NODE_ENV) => {
   const extension = normalizeExtension(
@@ -104,6 +102,7 @@ const mergeOptions = (source, loaderOptions, fileOptions, NODE_ENV) => {
     },
     sharp: {
       jpg: {progressive: true, quality: 100},
+      png: {compressionLevel: 0},
       rezize: {kernel: fileOptions.interpolation || 'cubic'},
       webp: {...loaderOptions.webp, quality: 100},
     },
@@ -115,23 +114,19 @@ const mergeOptions = (source, loaderOptions, fileOptions, NODE_ENV) => {
 };
 
 const reportSavings = ({filename, extension}, newSize, oldSize) => {
-  const sizeDiff = oldSize - newSize;
+  const savings = Math.round(1000 * (1 - newSize / oldSize)) / 10;
   const oldExt = filename.match(/\.[^.]+$/);
   const format = oldExt[0] !== `.${extension}` ? ` -> ${extension}` : '';
+  const operator = savings >= 0 ? '-' : '+';
 
-  if (sizeDiff === 0) {
-    return `${chalk.bold(`${filename}${format}`)}: 🤷 ‍ same size`;
+  if (savings === 0) {
+    return `${chalk.bold(`${filename}${format}`)}: same size 🤷`;
   }
-
-  const verb = sizeDiff >= 0 ? 'saved' : 'lost';
-  const color =
-    sizeDiff >= 0 ? chalk.rgb(45, 177, 107) : chalk.rgb(255, 93, 93);
-
-  return `${chalk.bold(`${filename}${format}`)}: ${verb} ${color(
-    `${chalk.bold(
-      `${Math.ceil(SAVINGS_SPECIFICITY * sizeDiff / 1028) /
-        SAVINGS_SPECIFICITY} KB`
-    )} (${Math.ceil(100 * sizeDiff / oldSize)}% / ${bTo3G(sizeDiff)} on 3G)`
+  const color = savings >= 0 ? chalk.rgb(45, 177, 107) : chalk.rgb(255, 93, 93);
+  return `${chalk.bold(`${filename}${format}`)}: ${toKB(
+    oldSize
+  )} KB ${operator} ${Math.abs(savings)}% = ${chalk.bold(
+    color(`${toKB(newSize)} KB`)
   )}`;
 };
 
@@ -144,8 +139,8 @@ const optimize = (
   const plugins = [
     imageminGifsicle(gifsicle), // GIF
     imageminMozjpeg(mozjpeg), // JPG
-    imageminPngQuant(pngquant), // PNG step 2
-    imageminOptiPng(optipng), // PNG step 3
+    imageminPngQuant(pngquant), // PNG step 1
+    imageminOptiPng(optipng), // PNG step 2
     imageminSVGO(svgo), // SVG
     imageminWebP(webp), // WebP
   ];
