@@ -33,14 +33,14 @@
           <g id="unnecessary-group-5">
             <g id="unnecessary-group-6">
               <circle fill="none" stroke="#673AB7" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" cx="256" cy="256" r="256"></circle>
-              <path d="M256,153.682581 L305.630968,76.0567742 C326.276129,76.0567742 343.04,92.8206452 343.04,113.465806 C343.04,113.465806 256,153.682581 256,153.682581 C256,153.682581 168.96,113.465806 168.96,113.465806 C168.96,92.8206452 185.723871,76.0567742 206.369032,76.0567742 L256,153.682581" id="Shape" stroke="#673AB7" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"></path>
-              <polyline stroke="#673AB7" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" points="129.899355 239.731613 159.380645 226.766452 159.380645 421.987097 354.51871 421.987097 354.51871 226.849032 383.917419 239.814194"></polyline>
-              <path d="M207.277419,131.138065 L208.103226,194.064516" id="Shape" stroke="#673AB7" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"></path>
-              <path d="M304.722581,131.055484 L305.548387,194.064516" id="Shape" stroke="#673AB7" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"></path>
-              <path d="M256,153.682581 L256,421.987097" id="Shape" stroke="#673AB7" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path fill="none" d="M256,153.682581 L305.630968,76.0567742 C326.276129,76.0567742 343.04,92.8206452 343.04,113.465806 C343.04,113.465806 256,153.682581 256,153.682581 C256,153.682581 168.96,113.465806 168.96,113.465806 C168.96,92.8206452 185.723871,76.0567742 206.369032,76.0567742 L256,153.682581" id="Shape" stroke="#673AB7" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"></path>
+              <polyline fill="none" stroke="#673AB7" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" points="129.899355 239.731613 159.380645 226.766452 159.380645 421.987097 354.51871 421.987097 354.51871 226.849032 383.917419 239.814194"></polyline>
+              <path fill="none" d="M207.277419,131.138065 L208.103226,194.064516" id="Shape" stroke="#673AB7" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path fill="none" d="M304.722581,131.055484 L305.548387,194.064516" id="Shape" stroke="#673AB7" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path fill="none" d="M256,153.682581 L256,421.987097" id="Shape" stroke="#673AB7" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"></path>
               <polygon fill="#FFFFFF" fill-rule="nonzero" points="73.9922581 190.183226 82.4980645 279.865806 190.76129 346.508387 217.021935 317.027097"></polygon>
               <polygon fill="#FFFFFF" fill-rule="nonzero" points="440.732903 190.183226 432.227097 279.865806 323.963871 346.508387 297.703226 317.027097"></polygon>
-              <polyline stroke="#673AB7" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" points="439.824516 190.265806 296.877419 317.109677 323.055484 346.590968 431.31871 280.030968 439.824516 190.265806 378.962581 129.403871 343.370323 113.465806 256 153.682581 169.290323 113.465806 134.936774 129.23871 73.9922581 190.183226 82.4980645 279.865806 190.76129 346.508387 217.021935 317.027097 73.9922581 190.183226"></polyline>
+              <polyline fill="none" stroke="#673AB7" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" points="439.824516 190.265806 296.877419 317.109677 323.055484 346.590968 431.31871 280.030968 439.824516 190.265806 378.962581 129.403871 343.370323 113.465806 256 153.682581 169.290323 113.465806 134.936774 129.23871 73.9922581 190.183226 82.4980645 279.865806 190.76129 346.508387 217.021935 317.027097 73.9922581 190.183226"></polyline>
             </g>
           </g>
         </g>
