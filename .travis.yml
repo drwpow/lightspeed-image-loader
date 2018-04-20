@@ -1,0 +1,10 @@
+language: node_js
+node_js:
+- 9.11.1
+jobs:
+  include:
+  - script: npm run build
+branches:
+  only:
+  - master
+  - "/^v([0-9]+)\\.([0-9]+)\\.([0-9]+)(?:\\-(rc\\.[0-9]+)*)?$/"
