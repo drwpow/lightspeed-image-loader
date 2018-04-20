@@ -1,6 +1,9 @@
 {
   "type": "object",
   "properties": {
+    "context": {
+      "type": "string"
+    },
     "emitFile": {
       "description":
         "Set to `false` to skip processing file (for server-side rendering, e.g.).",
@@ -14,6 +17,10 @@
       "description": "Specify JpegOptim options.",
       "type": "object"
     },
+    "name": {
+      "description": "Override default `output.filename` setting",
+      "type": ["object", "string"]
+    },
     "outputPath": {
       "description": "Override webpack’s default output path for these images.",
       "type": ["object", "string"]
@@ -22,13 +29,23 @@
       "description": "Specify OptiPNG options.",
       "type": "object"
     },
+    "publicPath": {
+      "description": "Override webpack’s default public path for these images.",
+      "type": ["object", "string"]
+    },
     "pngquant": {
       "description": "Specify PNGquant options.",
       "type": "object"
     },
+    "regExp": {
+      "type": "string"
+    },
     "svgo": {
       "description": "Alias of `svgo`. Override SVGO default settings.",
       "type": "object"
+    },
+    "useRelativePath": {
+      "type": "boolean"
     }
   },
   "additionalProperties": false
