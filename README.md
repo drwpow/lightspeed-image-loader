@@ -1,8 +1,10 @@
-![optimize-image-loader latest version][version]
+![lightspeed-image-loader latest version][version]
 ![Dependencies status][status]
 ![devDependencies status][status-dev]
 
-# Optimize Image Loader
+# Lightspeed Image Loader
+
+![Lightspeed Image Loader](lightspeed.jpg)
 
 On-the-fly responsive image resizing and minification for webpack v4. Uses
 [mozjpeg][mozjpeg], [GIFsicle][gifsicle], [OptiPNG][optipng], and
@@ -26,7 +28,7 @@ sharp library._
 ## Installation
 
 ```
-npm i --save-dev optimize-image-loader
+npm i --save-dev lightspeed-image-loader
 ```
 
 ## Usage
@@ -40,7 +42,7 @@ module: {
   rules: [
     {
       test: /\.(jpe?g|gif|png|svg)/i,
-      use: 'optimize-image-loader'
+      use: 'lightspeed-image-loader'
     }
   ],
 },
@@ -221,7 +223,7 @@ module: {
     {
       test: /(jpe?g|gif|png|svg)$/i,
       use: {
-        loader: 'optimize-image-loader',
+        loader: 'lightspeed-image-loader',
         options: {
           mozjpeg: {
             quality: 60, // 1 – 100, higher is heavier
@@ -318,13 +320,13 @@ This loader wouldn’t be possible without the significant achievements of:
 [mozjpeg]: https://github.com/imagemin/imagemin-mozjpeg
 [node-gyp]: https://github.com/nodejs/node-gyp/issues/1337
 [optipng]: https://github.com/imagemin/imagemin-optipng
-[optipng-options]: https://github.com/dangodev/optimize-image-loader/wiki/OptiPNG-Settings
+[optipng-options]: https://github.com/dangodev/lightspeed-image-loader/wiki/OptiPNG-Settings
 [pngquant]: https://github.com/imagemin/imagemin-pngquant
 [raw-loader]: https://github.com/webpack-contrib/raw-loader
 [sharp]: https://github.com/lovell/sharp
-[status-dev]: https://david-dm.org/dangodev/optimize-image-loader/dev-status.svg
-[status]: https://david-dm.org/dangodev/optimize-image-loader/status.svg
+[status-dev]: https://david-dm.org/dangodev/lightspeed-image-loader/dev-status.svg
+[status]: https://david-dm.org/dangodev/lightspeed-image-loader/status.svg
 [svgo]: https://github.com/svg/svgo
-[version]: https://badge.fury.io/js/optimize-image-loader.svg
+[version]: https://badge.fury.io/js/lightspeed-image-loader.svg
 [webp]: https://github.com/imagemin/imagemin-webp
 [webpack-prod]: https://webpack.js.org/guides/production/

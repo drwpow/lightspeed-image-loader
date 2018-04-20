@@ -1,5 +1,5 @@
 {
-  "name": "optimize-image-loader",
+  "name": "lightspeed-image-loader",
   "version": "0.0.6",
   "description": "webpack loader for optimized, responsive images. Works with React, Vue, and all frontend setups.",
   "main": "dist",
@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dangodev/optimize-image-loader.git"
+    "url": "git+https://github.com/dangodev/lightspeed-image-loader.git"
   },
   "author": "dangodev",
   "license": "ISC",
