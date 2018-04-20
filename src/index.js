@@ -12,8 +12,9 @@ const {getOptions, parseQuery} = require('loader-utils');
 const sharp = require('sharp');
 const validateOptions = require('schema-utils');
 
-const loaderSchema = require('./config/loader.json');
 const fileSchema = require('./config/file.json');
+const gifsicleDefaults = require('./config/gifsicle');
+const loaderSchema = require('./config/loader.json');
 const mozjpegDefaults = require('./config/mozjpeg');
 const optipngDefaults = require('./config/optipng');
 const pngquantDefaults = require('./config/pngquant');
@@ -75,6 +76,7 @@ const mergeOptions = (source, loaderOptions, fileOptions, NODE_ENV) => {
     mimetype: MIME_TYPES[newExtension],
     optimize: {
       gifsicle: {
+        ...gifsicleDefaults,
         ...loaderOptions.gifsicle,
         optimizationLevel: gifsicleQuality(newQuality),
       },
