@@ -7,7 +7,7 @@
 ![Lightspeed Image Loader](lightspeed.jpg)
 
 On-the-fly responsive image resizing and minification for webpack v4. Uses
-[mozjpeg][mozjpeg], [GIFsicle][gifsicle], [OptiPNG][optipng], and
+[mozjpeg][mozjpeg], [Gifsicle][gifsicle], [OptiPNG][optipng], and
 [SVGO][svgo], supports [WebP][webp], and can even generate Medium.com-style
 low-quality image placeholders (LQIP) for loading.
 
@@ -204,17 +204,16 @@ the loader as usual:
 | `outputPath` | `output.path`       | Override webpack’s default output path for these images (setting from [file-loader][file-loader]). |
 | `publicPath` | `output.publicPath` | Override webpack’s default output path for these images (setting from [file-loader][file-loader]). |
 | `emitFile`   | `true`              | Set to `false` to skip processing file (setting from [file-loader][file-loader]).                  |
-| `gifsicle`   | (object)            | Specify GIFsicle options.                                                                          |
-| `mozjpeg`    | (object)            | Specify [mozjpeg][mozjpeg] options.                                                                |
+| `gifsicle`   | (object)            | Specify Gifsicle options ([view options][gifsicle-options]).                                       |
+| `mozjpeg`    | (object)            | Specify mozjpeg options ([view options][mozjpeg-options]).                                         |
 | `optipng`    | (object)            | Specify OptiPNG options ([view options][optipng-options]).                                         |
-| `pngquant`   | (object)            | Specify [PNGquant][pngquant] options.                                                              |
-| `svgo`       | (object)            | Specify [SVGO][svgo] default settings.                                                             |
+| `pngquant`   | (object)            | Specify PNGquant options ([view options][pngquant-options]).                                       |
+| `svgo`       | (object)            | Specify [SVGO][svgo] options.                                                                      |
 
-_Note: because this loader passes images on to [file-loader][file-loader],
+\_Note: because this loader passes images on to [file-loader][file-loader],
 you should be able to use any options from file-loader loaders within this
 config. However,
-**don’t use this loader for anything other than images!** You’ll still need
-those loaders for all other file types._
+**don’t use this loader for anything other than images!**
 
 #### Example
 
@@ -229,7 +228,7 @@ module: {
           mozjpeg: {
             quality: 60, // 1 – 100, higher is heavier
           },
-          pngquant: {
+          optipng: {
             optimizationLevel: 5, // 0 = light; 7 = heavy compression
           },
           svgo: {
@@ -315,14 +314,17 @@ This loader wouldn’t be possible without the significant achievements of:
 [csstricks]: https://css-tricks.com/using-webp-images/
 [file-loader]: https://github.com/webpack-contrib/file-loader
 [gifsicle]: https://github.com/imagemin/imagemin-gifsicle
+[gifsicle-options]: https://github.com/dangodev/lightspeed-image-loader/wiki/Gifsicle-Settings
 [homebrew]: https://brew.sh/
 [imagemin]: https://github.com/imagemin/imagemin
 [lanczos]: https://en.wikipedia.org/wiki/Lanczos_resampling
 [mozjpeg]: https://github.com/imagemin/imagemin-mozjpeg
+[mozjpeg-options]: https://github.com/dangodev/lightspeed-image-loader/wiki/mozjpeg-Settings
 [node-gyp]: https://github.com/nodejs/node-gyp/issues/1337
 [optipng]: https://github.com/imagemin/imagemin-optipng
 [optipng-options]: https://github.com/dangodev/lightspeed-image-loader/wiki/OptiPNG-Settings
 [pngquant]: https://github.com/imagemin/imagemin-pngquant
+[pngquant-options]: https://github.com/dangodev/lightspeed-image-loader/wiki/PNGQuant-Settings
 [sharp]: https://github.com/lovell/sharp
 [status-dev]: https://david-dm.org/dangodev/lightspeed-image-loader/dev-status.svg
 [status]: https://david-dm.org/dangodev/lightspeed-image-loader/status.svg
