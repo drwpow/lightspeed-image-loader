@@ -199,19 +199,20 @@ inline, but there are some settings which make sense to set globally, such as
 [SVGO][svgo] settings, or a fallback quality. In these cases, pass options to
 the loader as usual:
 
-| Name         | Default       | Description                                                                                        |
-| :----------- | :------------ | :------------------------------------------------------------------------------------------------- |
-| `outputPath` | `output.path` | Override webpack’s default output path for these images (setting from [file-loader][file-loader]). |
-| `emitFile`   | `true`        | Set to `false` to skip processing file (setting from [file-loader][file-loader]).                  |
-| `gifsicle`   | (object)      | Specify GIFsicle options.                                                                          |
-| `mozjpeg`    | (object)      | Specify [mozjpeg][mozjpeg] options.                                                                |
-| `optipng`    | (object)      | Specify OptiPNG options ([view options][optipng-options]).                                         |
-| `pngquant`   | (object)      | Specify [PNGquant][pngquant] options.                                                              |
-| `svgo`       | (object)      | Specify [SVGO][svgo] default settings.                                                             |
+| Name         | Default             | Description                                                                                        |
+| :----------- | :------------------ | :------------------------------------------------------------------------------------------------- |
+| `outputPath` | `output.path`       | Override webpack’s default output path for these images (setting from [file-loader][file-loader]). |
+| `publicPath` | `output.publicPath` | Override webpack’s default output path for these images (setting from [file-loader][file-loader]). |
+| `emitFile`   | `true`              | Set to `false` to skip processing file (setting from [file-loader][file-loader]).                  |
+| `gifsicle`   | (object)            | Specify GIFsicle options.                                                                          |
+| `mozjpeg`    | (object)            | Specify [mozjpeg][mozjpeg] options.                                                                |
+| `optipng`    | (object)            | Specify OptiPNG options ([view options][optipng-options]).                                         |
+| `pngquant`   | (object)            | Specify [PNGquant][pngquant] options.                                                              |
+| `svgo`       | (object)            | Specify [SVGO][svgo] default settings.                                                             |
 
-_Note: because this loader passes images on to [file-loader][file-loader], or
-[raw-loader][raw-loader], the same is true of loader options! You should be
-able to use any options from those loaders within this config. However,
+_Note: because this loader passes images on to [file-loader][file-loader],
+you should be able to use any options from file-loader loaders within this
+config. However,
 **don’t use this loader for anything other than images!** You’ll still need
 those loaders for all other file types._
 
@@ -303,7 +304,7 @@ the same way. This gives you the freedom to handle each image differently.
 This loader wouldn’t be possible without the significant achievements of:
 
 * [@kevva][@kevva] for [imagemin][imagemin]
-* [@sokra][@sokra], [@d3viant0ne][@d3viant0ne], and [@michael-ciniawsky][@michael-ciniawsky] for [file-loader][file-loader] and [raw-loader][raw-loader]
+* [@sokra][@sokra], [@d3viant0ne][@d3viant0ne], and [@michael-ciniawsky][@michael-ciniawsky] for [file-loader][file-loader]
 * [@lovell][@lovell] for [sharp][sharp]
 
 [@d3viant0ne]: https://github.com/d3viant0ne
@@ -322,7 +323,6 @@ This loader wouldn’t be possible without the significant achievements of:
 [optipng]: https://github.com/imagemin/imagemin-optipng
 [optipng-options]: https://github.com/dangodev/lightspeed-image-loader/wiki/OptiPNG-Settings
 [pngquant]: https://github.com/imagemin/imagemin-pngquant
-[raw-loader]: https://github.com/webpack-contrib/raw-loader
 [sharp]: https://github.com/lovell/sharp
 [status-dev]: https://david-dm.org/dangodev/lightspeed-image-loader/dev-status.svg
 [status]: https://david-dm.org/dangodev/lightspeed-image-loader/status.svg

@@ -9,7 +9,6 @@ const imageminPngQuant = require('imagemin-pngquant');
 const imageminSVGO = require('imagemin-svgo');
 const imageminWebP = require('imagemin-webp');
 const {getOptions, parseQuery} = require('loader-utils');
-const rawLoader = require('raw-loader');
 const sharp = require('sharp');
 const validateOptions = require('schema-utils');
 
