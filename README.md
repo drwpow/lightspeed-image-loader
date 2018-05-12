@@ -210,10 +210,9 @@ the loader as usual:
 | `pngquant`   | (object)            | Specify PNGquant options ([view options][pngquant-options]).                                       |
 | `svgo`       | (object)            | Specify [SVGO][svgo] options.                                                                      |
 
-\_Note: because this loader passes images on to [file-loader][file-loader],
-you should be able to use any options from file-loader loaders within this
-config. However,
-**don’t use this loader for anything other than images!**
+_Note: because this loader passes images on to [file-loader][file-loader],
+you should be able to use any of its options within this config. However,
+**don’t use this loader for anything other than images!**_
 
 #### Example
 
@@ -292,22 +291,26 @@ Two reasons: first, image optimization / resizing has a particular order that
 needs to be kept: resizing first, then optimization. Always. If there’s only
 one proper order for images, and if one loader does it all, why chain?
 
-Second, and more importantly, webpack can only pass a file through a loader
-based on `test` (which typically coincides with extension). So you couldn’t,
-say, take one `.jpg` file and output a URL, and take another `.jpg` file and
-output an inline base64-encoded version. You’d need to handle every extension
-the same way. This gives you the freedom to handle each image differently.
+Second, and more importantly, webpack doesn’t make it easy to handle the same
+file extension in different ways. This makes sense for, say, JS, but less so
+for images. This loader prioritizes practical image handling over webpack’s
+loader philosophy, allowing you to take the same file extension and serve it
+multiple different ways depending on the need.
 
 ## Special Thanks
 
 This loader wouldn’t be possible without the significant achievements of:
 
+* [@dcommander][@dcommander] for [mozjpeg][mozjpeg]
+* [@kornelski][@kornelski] for [pngquant][pngquant]
 * [@kevva][@kevva] for [imagemin][imagemin]
 * [@sokra][@sokra], [@d3viant0ne][@d3viant0ne], and [@michael-ciniawsky][@michael-ciniawsky] for [file-loader][file-loader]
 * [@lovell][@lovell] for [sharp][sharp]
 
+[@dcommander]: https://github.com/dcommander
 [@d3viant0ne]: https://github.com/d3viant0ne
 [@kevva]: https://github.com/kevva
+[@kornelski]: https://github.com/kornelski
 [@lovell]: https://github.com/lovell
 [@michael-ciniawsky]: https://github.com/michael-ciniawsky
 [@sokra]: https://github.com/sokra
