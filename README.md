@@ -4,7 +4,7 @@
 
 # Lightspeed Image Loader
 
-![Lightspeed Image Loader](lightspeed.jpg)
+![Lightspeed Image Loader](./images/lightspeed.jpg)
 
 On-the-fly responsive image resizing and minification for webpack v4. Uses
 [mozjpeg][mozjpeg], [Gifsicle][gifsicle], [OptiPNG][optipng], and
@@ -141,26 +141,35 @@ import inlineSVG from './myimage.svg?inline';
 import pixelArt from './pixel-art?w=2048&interpolation=nearest';
 ```
 
-#### Blurry image placeholder while image loads (React)
+#### Low Quality Image Placeholder (LQIP) (React)
+
+<p align="center">
+  <img src="./images/placeholder.jpg" alt="low quality image placeholders (LQIP)" />
+</p>
 
 ```js
 import image from './myimage.jpg?w=1200';
 import placeholder from './myimage.jpg?placeholder';
 
-<div style={{ backgroundImage: `url(${placeholder}), backgroundSize: 'cover'` }}>
+<div style={{ backgroundImage: `url("${placeholder}"), backgroundSize: 'cover'` }}>
   <img src={image} />
 </div>;
 ```
 
-Due to the nature of SVG the placeholder will be small, but it will preserve
-its aspect ratio if used in an `<img>` tag and is made to be expanded. Either
-use `width: 100%; height: auto` to fill the area, or `background-size` to
-make it larger.
+_Note: double quotes inside `url("")` are important! [Why?](#lqip-placeholder-images-are-blank)_
 
-An SVG placeholder is used to avoid that white fuzzy border caused by CSS’
-blur filter on normal images.
+Low quality image placeholders (LQIP) improve user experience by letting
+users look at something while an image loads ([more info in this
+article][lqip-article]).
 
-_Note: placeholders can’t be generated for SVGs_
+The LQIP will be small by default, but it will preserve its aspect ratio.
+Either use `width: 100%; height: auto` to fill the area, or `background-size`
+to make it larger.
+
+This loader generates SVG LQIP to avoid that white fuzzy border caused by
+CSS’ blur filter on normal images.
+
+Placeholders can’t be generated for SVGs.
 
 ## Options
 
@@ -267,6 +276,8 @@ For tips on using WebP effectively, read this [CSS Tricks article][csstricks].
 
 ## Troubleshooting
 
+### Python Version
+
 If `python --version` returns ^3 on your system, you’ll likely encounter the
 [frequently-discussed node-gyp][node-gyp] error:
 
@@ -282,6 +293,17 @@ If your machine doesn’t have `python2.7`, install Python 2.x using
 [Homebrew][homebrew] or some other means, and set that executable with
 `npm config set python /path/to/python2` or
 `yarn config set python /path/to/python2`
+
+### LQIP (placeholder images) are blank
+
+The placeholder SVGs are compressed further by
+[mini-svg-data-uri][mini-svg-data-uri], which requires **double quotes** for
+`<img src="[placeholder]" />` and `background-image: url("[placeholder]")`.
+Check to make sure your code is outputting double quotes in HTML/CSS.
+
+The tradeoff for having to always use double quotes is much smaller bundles,
+and better GZIP performance without sacrificing browser support.
+[@tigt][@tigt] wrote a [great blog post on the subject][svg-base64-article]
 
 ## FAQ
 
@@ -299,21 +321,12 @@ Two reasons: first, image optimization / resizing has a particular order that
 needs to be kept: resizing first, then optimization. Always. If there’s only
 one proper order for images, and if one loader does it all, why chain?
 
-Second, and more importantly, webpack doesn’t make it easy to handle the same
-file extension in different ways. This makes sense for, say, JS, but less so
-for images. This loader prioritizes practical image handling over webpack’s
-loader philosophy, allowing you to take the same file extension and serve it
-multiple different ways depending on the need.
-
-### LQIP (placeholder images) aren’t showing!
-
-The placeholder SVGS are compressed further by
-[mini-svg-data-uri][mini-svg-data-uri], which requires **double quotes** for
-`<img src="[placeholder]" />` and `background-image: url("[placeholder]")`.
-Check to make sure your code is outputting double quotes in HTML/CSS.
-
-The tradeoff is much smaller bundles, and better GZIP performance without
-sacrificing browser support.
+Second, and more importantly, webpack doesn’t make it easy to serve a single
+file extension in multiple ways. This makes it difficult to reformat one
+image type into another as well as apply different compression rules
+per-file. In order to accomplish this, this loader breaks chaining in order
+to do what makes the most sense for image workflows (and if something is
+missing, please [file an issue][issues]!).
 
 ## Special Thanks
 
@@ -341,7 +354,9 @@ This loader wouldn’t be possible without the significant achievements of:
 [gifsicle-options]: https://github.com/dangodev/lightspeed-image-loader/wiki/Gifsicle-Settings
 [homebrew]: https://brew.sh/
 [imagemin]: https://github.com/imagemin/imagemin
+[issues]: https://github.com/dangodev/lightspeed-image-loader/issues
 [lanczos]: https://en.wikipedia.org/wiki/Lanczos_resampling
+[lqip-article]: https://jmperezperez.com/medium-image-progressive-loading-placeholder/
 [mozjpeg]: https://github.com/imagemin/imagemin-mozjpeg
 [mozjpeg-options]: https://github.com/dangodev/lightspeed-image-loader/wiki/mozjpeg-Settings
 [node-gyp]: https://github.com/nodejs/node-gyp/issues/1337
@@ -352,6 +367,7 @@ This loader wouldn’t be possible without the significant achievements of:
 [sharp]: https://github.com/lovell/sharp
 [status-dev]: https://david-dm.org/dangodev/lightspeed-image-loader/dev-status.svg
 [status]: https://david-dm.org/dangodev/lightspeed-image-loader/status.svg
+[svg-base64-article]: https://codepen.io/tigt/post/optimizing-svgs-in-data-uris
 [svgo]: https://github.com/svg/svgo
 [version]: https://badge.fury.io/js/lightspeed-image-loader.svg
 [webp]: https://github.com/imagemin/imagemin-webp
