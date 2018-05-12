@@ -15,11 +15,11 @@ low-quality image placeholders (LQIP) for loading.
 
 | Filetype | Resizing | Optimization | Converting to |
 | :------- | :------: | :----------: | :-----------: |
-| JPG      |    ✅    |      ✅      |      ✅       |
-| PNG      |    ✅    | ⚠️ **SLOW**  |  ⚠️ **SLOW**  |
-| WebP     |    ✅    |      ✅      |      ✅       |
-| SVG      |   N/A    |      ✅      |      N/A      |
-| GIF      |    🚫    |      ✅      |      🚫       |
+| JPG      | ✅        | ✅            | ✅             |
+| PNG      | ✅        | ⚠️ **SLOW**  | ⚠️ **SLOW**   |
+| WebP     | ✅        | ✅            | ✅             |
+| SVG      | N/A      | ✅            | N/A           |
+| GIF      | 🚫       | ✅            | 🚫            |
 
 _Note: GIF resizing/conversion isn’t supported due to lack of support in
 [sharp][sharp]. Overall, it’s a small price to pay for the build speed of the
@@ -147,10 +147,18 @@ import pixelArt from './pixel-art?w=2048&interpolation=nearest';
 import image from './myimage.jpg?w=1200';
 import placeholder from './myimage.jpg?placeholder';
 
-<div style={{ backgroundImage: `url(${placeholder})` }}>
+<div style={{ backgroundImage: `url(${placeholder}), backgroundSize: 'cover'` }}>
   <img src={image} />
 </div>;
 ```
+
+Due to the nature of SVG the placeholder will be small, but it will preserve
+its aspect ratio if used in an `<img>` tag and is made to be expanded. Either
+use `width: 100%; height: auto` to fill the area, or `background-size` to
+make it larger.
+
+An SVG placeholder is used to avoid that white fuzzy border caused by CSS’
+blur filter on normal images.
 
 _Note: placeholders can’t be generated for SVGs_
 
@@ -163,20 +171,20 @@ webpack config as your images change.
 
 ### Query Options
 
-| Name            | Default    | Description                                                                                                                                                                                                                                                                                                                                |
-| :-------------- | :--------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `width`         | (original) | Set image width (in pixels). Leave `height` blank to auto-scale. Specify `width` and `height` to ensure image is smaller than both.                                                                                                                                                                                                        |
-| `w`             |            | Shortcut for `width`.                                                                                                                                                                                                                                                                                                                      |
-| `height`        | (original) | Scale image height (in pixels). Leave `width` blank to auto-scale. Specify `width` and `height` to ensure image is smaller than both.                                                                                                                                                                                                      |
-| `h`             |            | Shortcut for `height`.                                                                                                                                                                                                                                                                                                                     |
-| `quality`       | `70`       | Specify `1`–`100` to set the image’s quality<sup>\*</sup>. For each image, set it as low as possible before compression is noticeable at display size.                                                                                                                                                                                     |
-| `q`             |            | Shortcut for `quality`.                                                                                                                                                                                                                                                                                                                    |
+| Name            | Default    | Description                                                                                                                                                                                                                                                                                                                                   |
+| :-------------- | :--------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `width`         | (original) | Set image width (in pixels). Leave `height` blank to auto-scale. Specify `width` and `height` to ensure image is smaller than both.                                                                                                                                                                                                           |
+| `w`             |            | Shortcut for `width`.                                                                                                                                                                                                                                                                                                                         |
+| `height`        | (original) | Scale image height (in pixels). Leave `width` blank to auto-scale. Specify `width` and `height` to ensure image is smaller than both.                                                                                                                                                                                                         |
+| `h`             |            | Shortcut for `height`.                                                                                                                                                                                                                                                                                                                        |
+| `quality`       | `70`       | Specify `1`–`100` to set the image’s quality<sup>\*</sup>. For each image, set it as low as possible before compression is noticeable at display size.                                                                                                                                                                                       |
+| `q`             |            | Shortcut for `quality`.                                                                                                                                                                                                                                                                                                                       |
 | `interpolation` | `'cubic'`  | When scaling, specify `'nearest'` for nearest-neighbor (pixel art), `'cubic'` for cubic interpolation, or `'lanczos2'` or `'lanczos3'` for [Lanczos][lanczos] with `a=2` or `a=3`. `'cubic'` is this loader’s default (because it’s what most are used to), as opposed to`'lanczos3'` which is sharp’s default (present for other loaders) |
-| `inline`        | `false`    | Set to `?inline` or `?inline=true` to return the individual image in base64 data URI, or raw SVG code 🎉.                                                                                                                                                                                                                                  |
-| `format`        | (same)     | Specify `jpg`, `webp`, or `png` to convert format from the original.                                                                                                                                                                                                                                                                       |
-| `f`             |            | Shortcut for `format`.                                                                                                                                                                                                                                                                                                                     |
-| `placeholder`   | `false`    | Specify `?placeholder` to return a low-quality image placeholder (technically this can be used alongside other options, but it’s not advised).                                                                                                                                                                                             |
-| `skip`          | `false`    | Set to `?skip` to bypass resizing & optimization entirely. This is particularly useful for SVGs that don’t optimize well.                                                                                                                                                                                                                  |
+| `inline`        | `false`    | Set to `?inline` or `?inline=true` to return the individual image in base64 data URI, or raw SVG code 🎉.                                                                                                                                                                                                                                     |
+| `format`        | (same)     | Specify `jpg`, `webp`, or `png` to convert format from the original.                                                                                                                                                                                                                                                                          |
+| `f`             |            | Shortcut for `format`.                                                                                                                                                                                                                                                                                                                        |
+| `placeholder`   | `false`    | Specify `?placeholder` to return a low-quality image placeholder (technically this can be used alongside other options, but it’s not advised).                                                                                                                                                                                               |
+| `skip`          | `false`    | Set to `?skip` to bypass resizing & optimization entirely. This is particularly useful for SVGs that don’t optimize well.                                                                                                                                                                                                                    |
 
 _<sup>\*</sup> Note: GIFsicle and OptiPNG don’t use a 1–100 quality scale, so
 `quality` will convert for you. However, if using loader options below, you’ll
@@ -199,16 +207,16 @@ inline, but there are some settings which make sense to set globally, such as
 [SVGO][svgo] settings, or a fallback quality. In these cases, pass options to
 the loader as usual:
 
-| Name         | Default             | Description                                                                                        |
-| :----------- | :------------------ | :------------------------------------------------------------------------------------------------- |
+| Name         | Default             | Description                                                                                         |
+| :----------- | :------------------ | :-------------------------------------------------------------------------------------------------- |
 | `outputPath` | `output.path`       | Override webpack’s default output path for these images (setting from [file-loader][file-loader]). |
 | `publicPath` | `output.publicPath` | Override webpack’s default output path for these images (setting from [file-loader][file-loader]). |
-| `emitFile`   | `true`              | Set to `false` to skip processing file (setting from [file-loader][file-loader]).                  |
-| `gifsicle`   | (object)            | Specify Gifsicle options ([view options][gifsicle-options]).                                       |
-| `mozjpeg`    | (object)            | Specify mozjpeg options ([view options][mozjpeg-options]).                                         |
-| `optipng`    | (object)            | Specify OptiPNG options ([view options][optipng-options]).                                         |
-| `pngquant`   | (object)            | Specify PNGquant options ([view options][pngquant-options]).                                       |
-| `svgo`       | (object)            | Specify [SVGO][svgo] options.                                                                      |
+| `emitFile`   | `true`              | Set to `false` to skip processing file (setting from [file-loader][file-loader]).                   |
+| `gifsicle`   | (object)            | Specify Gifsicle options ([view options][gifsicle-options]).                                        |
+| `mozjpeg`    | (object)            | Specify mozjpeg options ([view options][mozjpeg-options]).                                          |
+| `optipng`    | (object)            | Specify OptiPNG options ([view options][optipng-options]).                                          |
+| `pngquant`   | (object)            | Specify PNGquant options ([view options][pngquant-options]).                                        |
+| `svgo`       | (object)            | Specify [SVGO][svgo] options.                                                                       |
 
 _Note: because this loader passes images on to [file-loader][file-loader],
 you should be able to use any of its options within this config. However,
@@ -297,6 +305,16 @@ for images. This loader prioritizes practical image handling over webpack’s
 loader philosophy, allowing you to take the same file extension and serve it
 multiple different ways depending on the need.
 
+### LQIP (placeholder images) aren’t showing!
+
+The placeholder SVGS are compressed further by
+[mini-svg-data-uri][mini-svg-data-uri], which requires **double quotes** for
+`<img src="[placeholder]" />` and `background-image: url("[placeholder]")`.
+Check to make sure your code is outputting double quotes in HTML/CSS.
+
+The tradeoff is much smaller bundles, and better GZIP performance without
+sacrificing browser support.
+
 ## Special Thanks
 
 This loader wouldn’t be possible without the significant achievements of:
@@ -306,6 +324,7 @@ This loader wouldn’t be possible without the significant achievements of:
 * [@kevva][@kevva] for [imagemin][imagemin]
 * [@sokra][@sokra], [@d3viant0ne][@d3viant0ne], and [@michael-ciniawsky][@michael-ciniawsky] for [file-loader][file-loader]
 * [@lovell][@lovell] for [sharp][sharp]
+* [@tigt][@tigt] for [mini-svg-data-uri][mini-svg-data-uri]
 
 [@dcommander]: https://github.com/dcommander
 [@d3viant0ne]: https://github.com/d3viant0ne
@@ -314,7 +333,9 @@ This loader wouldn’t be possible without the significant achievements of:
 [@lovell]: https://github.com/lovell
 [@michael-ciniawsky]: https://github.com/michael-ciniawsky
 [@sokra]: https://github.com/sokra
+[@tigt]: https://github.com/tigt
 [csstricks]: https://css-tricks.com/using-webp-images/
+[mini-svg-data-uri]: https://github.com/tigt/mini-svg-data-uri
 [file-loader]: https://github.com/webpack-contrib/file-loader
 [gifsicle]: https://github.com/imagemin/imagemin-gifsicle
 [gifsicle-options]: https://github.com/dangodev/lightspeed-image-loader/wiki/Gifsicle-Settings

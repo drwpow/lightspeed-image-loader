@@ -1,6 +1,6 @@
 {
   "name": "lightspeed-image-loader",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "webpack loader for optimized, responsive images. Works with React, Vue, and all frontend setups.",
   "main": "dist",
   "files": [
@@ -42,6 +42,7 @@
     "imagemin-pngquant": "^5.1.0",
     "imagemin-svgo": "^6.0.0",
     "imagemin-webp": "^4.1.0",
+    "mini-svg-data-uri": "^1.0.0",
     "raw-loader": "^0.5.1",
     "sharp": "^0.20.2"
   },
