@@ -1,14 +1,16 @@
 {
   "name": "lightspeed-image-loader",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "webpack loader for optimized, responsive images. Works with React, Vue, and all frontend setups.",
   "main": "dist",
   "files": [
     "dist"
   ],
   "scripts": {
+    "prebuild": "npm run lint",
     "build": "babel src -d dist --ignore 'src/**/*.test.js' --copy-files",
     "build:watch": "babel src -d dist --ignore 'src/**/*.test.js' --copy-files --watch",
+    "lint": "eslint src --ignore-pattern src/config",
     "test": "test"
   },
   "repository": {
@@ -31,7 +33,7 @@
     "performance"
   ],
   "dependencies": {
-    "chalk": "^2.3.2",
+    "chalk": "^2.4.1",
     "file-loader": "^1.1.11",
     "imagemin": "^5.3.1",
     "imagemin-gifsicle": "^5.2.0",
@@ -40,15 +42,16 @@
     "imagemin-pngquant": "^5.1.0",
     "imagemin-svgo": "^6.0.0",
     "imagemin-webp": "^4.1.0",
+    "mini-svg-data-uri": "^1.0.0",
     "raw-loader": "^0.5.1",
-    "sharp": "^0.20.1"
+    "sharp": "^0.20.2"
   },
   "devDependencies": {
-    "@babel/cli": "^7.0.0-beta.44",
-    "@babel/core": "^7.0.0-beta.44",
-    "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.44",
-    "@babel/preset-env": "^7.0.0-beta.44",
-    "babel-eslint": "^8.2.2",
+    "@babel/cli": "^7.0.0-beta.46",
+    "@babel/core": "^7.0.0-beta.46",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.46",
+    "@babel/preset-env": "^7.0.0-beta.46",
+    "babel-eslint": "^8.2.3",
     "eslint": "^4.19.1",
     "eslint-config-google": "^0.9.1",
     "loader-utils": "^1.1.0",

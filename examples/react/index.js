@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 
 import jpg from './original.jpg?quality=50&w=200';
 import jpgDupe from './original.jpg?q=50&width=200';
-import jpgLarge from './original.jpg?quality=80&w=500';
+import jpgLarge from './original.jpg?quality=80&w=1400';
 import jpgInline from './original.jpg?inline&q=80&w=500';
 import jpgToPNG from './original.jpg?f=png';
 import jpgToWebP from './original.jpg?f=webp&w=1200';
@@ -15,11 +15,7 @@ import skip from './original.jpg?skip';
 import pixelArt from './pixel-art.png?w=500&interpolation=linear';
 import placeholder from './original.jpg?placeholder';
 
-console.log(svgInline);
-
-const inlineSVG = () => ({
-  __html: svgInline,
-});
+const inlineSVG = () => ({__html: svgInline});
 
 const App = () => (
   <div>
@@ -47,7 +43,7 @@ const App = () => (
     <img src={pixelArt} />
     <div
       style={{
-        backgroundImage: `url(${placeholder})`,
+        backgroundImage: `url("${placeholder}")`,
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
         backgroundSize: 'cover',
