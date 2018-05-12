@@ -7,8 +7,10 @@
     "dist"
   ],
   "scripts": {
+    "prebuild": "npm run lint",
     "build": "babel src -d dist --ignore 'src/**/*.test.js' --copy-files",
     "build:watch": "babel src -d dist --ignore 'src/**/*.test.js' --copy-files --watch",
+    "lint": "eslint src --ignore-pattern src/config",
     "test": "test"
   },
   "repository": {
