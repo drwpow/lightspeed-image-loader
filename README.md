@@ -144,16 +144,14 @@ import pixelArt from './pixel-art?w=2048&interpolation=nearest';
 #### Low Quality Image Placeholder (LQIP) (React)
 
 <p align="center">
-  <img src="./images/placeholder.jpg" alt="low quality image placeholders (LQIP)" />
+  <img src="./images/placeholder.jpg" alt="The low quality image placeholder shows a blurry version of the image before the full-resolution original downloads." />
 </p>
 
 ```js
 import image from './myimage.jpg?w=1200';
 import placeholder from './myimage.jpg?placeholder';
 
-<div style={{ backgroundImage: `url("${placeholder}"), backgroundSize: 'cover'` }}>
-  <img src={image} />
-</div>;
+<img src={image} style={{ backgroundImage: `url("${placeholder}")` }}/>;
 ```
 
 _Note: double quotes inside `url("")` are important! [Why?](#lqip-placeholder-images-are-blank)_
@@ -161,10 +159,6 @@ _Note: double quotes inside `url("")` are important! [Why?](#lqip-placeholder-im
 Low quality image placeholders (LQIP) improve user experience by letting
 users look at something while an image loads ([more info in this
 article][lqip-article]).
-
-The LQIP will be small by default, but it will preserve its aspect ratio.
-Either use `width: 100%; height: auto` to fill the area, or `background-size`
-to make it larger.
 
 This loader generates SVG LQIP to avoid that white fuzzy border caused by
 CSS’ blur filter on normal images.
