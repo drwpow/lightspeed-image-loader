@@ -1,4 +1,5 @@
 const DEFAULT_QUALITY = 70; // %
+const LQIP_WIDTH = 32; // px
 const MIME_TYPES = {
   gif: 'image/gif',
   jpeg: 'image/jpeg',
@@ -10,5 +11,6 @@ const MIME_TYPES = {
 
 module.exports = {
   DEFAULT_QUALITY,
+  LQIP_WIDTH,
   MIME_TYPES,
 };

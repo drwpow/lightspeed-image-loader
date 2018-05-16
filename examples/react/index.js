@@ -43,7 +43,7 @@ const App = () => (
     <img src={pixelArt} />
     <div
       style={{
-        backgroundImage: `url("${placeholder}")`
+        backgroundImage: `url("${placeholder}")`,
         height: 320,
         width: 320,
       }}
