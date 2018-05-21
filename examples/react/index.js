@@ -44,9 +44,6 @@ const App = () => (
     <div
       style={{
         backgroundImage: `url("${placeholder}")`,
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        backgroundSize: 'cover',
         height: 320,
         width: 320,
       }}

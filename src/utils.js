@@ -11,7 +11,7 @@ const {DEFAULT_QUALITY, MIME_TYPES} = require('./constants');
 /* Helpers */
 
 const dataURI = (buffer, mime) =>
-  `data:${mime};base64,${buffer.toString('base64')}`;
+  `data:${mime};base64,${buffer.toString('base64').replace(/=+$/, '')}`;
 
 const gifsicleQuality = (q) =>
   Math.min(1, Math.max(3, Math.ceil((100 - q) / (100 / 3))));
