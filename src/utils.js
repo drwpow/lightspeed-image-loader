@@ -84,6 +84,7 @@ const mergeOptions = (source, {loaderOptions, fileOptions}) => {
       png: {compressionLevel: 0},
       rezize: {kernel: fileOptions.interpolation || 'cubic'},
       webp: {...loaderOptions.webp, quality: 100},
+      rezize: {kernel: fileOptions.interpolation || 'lanczos3'},
     },
     pathname: source,
     placeholder:
